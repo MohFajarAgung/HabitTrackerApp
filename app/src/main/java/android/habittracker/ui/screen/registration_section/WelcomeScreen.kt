@@ -47,7 +47,7 @@ fun WelcomeScreen(
             horizontalAlignment = Alignment.CenterHorizontally) {
             WelcomeHeader()
             WelcomeImage()
-            CustomButton( textButton = "GET STARTED", onClick = {
+            CustomButton( modifier.padding(horizontal = 20.dp),textButton = "GET STARTED", onClick = {
                 navController.navigate("signInScreen")
             } )
 

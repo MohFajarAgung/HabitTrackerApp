@@ -22,14 +22,15 @@ import androidx.navigation.NavController
 fun CustomButton(
     modifier: Modifier = Modifier,
     textButton : String,
-    onClick : () -> Unit
+    btnColor : Color = Color(0xFFEBEAEC),
+    textColor : Color = Color(0xFF3F414E),
+    onClick : () -> Unit,
 ){
     Button(
         modifier = modifier
             .fillMaxWidth()
-            .height(63.dp)
-            .padding(horizontal = 20.dp),
-        colors = ButtonDefaults.buttonColors(Color(0xFFEBEAEC)),
+            .height(63.dp),
+        colors = ButtonDefaults.buttonColors(btnColor),
         onClick = {
         onClick()
     }) {
@@ -38,7 +39,7 @@ fun CustomButton(
             style = TextStyle(
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF3F414E),
+                color = textColor,
                 shadow = Shadow(
                     color = Color(0xFF000000).copy(alpha = 0.25f),
                     offset = Offset(0f,4f),

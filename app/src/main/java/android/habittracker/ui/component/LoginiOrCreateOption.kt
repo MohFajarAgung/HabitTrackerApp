@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -30,26 +29,26 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-data class LoginOptionData(
+data class LoginOrCreateOptionData(
     val facebook : String = "CONTINUE WITH FACEBOOK",
     val google : String = "CONTINUE WITH GOOGLE",
 )
 
 @Composable
-fun LoginOption(
+fun LoginOrCreateOption(
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
     Column {
         CustomLoginOptionButton(
-            textButton = LoginOptionData().facebook,
+            textButton = LoginOrCreateOptionData().facebook,
             iconPainter = painterResource(id = R.drawable.facebook_icon),
             bgColor = Color(0xFF7583CA),
         ) {
             Toast.makeText(context, "Facebook", Toast.LENGTH_SHORT).show()
         }
         CustomLoginOptionButton(
-            textButton = LoginOptionData().google,
+            textButton = LoginOrCreateOptionData().google,
             iconPainter = painterResource(id = R.drawable.google_icon),
             bgColor = Color(0xFFEBEAEC),
         ) {
@@ -95,7 +94,7 @@ fun CustomLoginOptionButton(
                 Spacer(modifier = modifier.width(50.dp))
 
                 val colorText = when(textButton) {
-                     LoginOptionData().facebook-> {
+                     LoginOrCreateOptionData().facebook-> {
                         Color.White
                     }
                     else -> Color(0xFF3F414E)

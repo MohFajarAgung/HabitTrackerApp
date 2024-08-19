@@ -1,9 +1,9 @@
 package android.habittracker.ui.screen.registration_section
 
 import android.habittracker.ui.component.CustomTopAppBar
-import android.habittracker.ui.component.LoginOption
-import android.habittracker.ui.component.LoginWithEmail
-import android.habittracker.ui.component.LoginWithEmailOption
+import android.habittracker.ui.component.LoginOrCreateOption
+import android.habittracker.ui.component.LoginOrSignUpWithEmail
+import android.habittracker.ui.component.LoginOrSignUpWithEmailOption
 import android.habittracker.ui.component.SignInAndSingUpBg
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -53,9 +53,9 @@ fun SignInScreen(
                 textAlign = TextAlign.Center
             )
 
-            LoginOption()
+            LoginOrCreateOption()
             
-            LoginWithEmail(textHead = LoginWithEmailOption().logIn)
+            LoginOrSignUpWithEmail(textHead = LoginOrSignUpWithEmailOption().logIn, navController =  navController)
 
 
         }
