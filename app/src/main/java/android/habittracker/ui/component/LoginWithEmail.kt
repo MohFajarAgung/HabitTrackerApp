@@ -61,6 +61,7 @@ fun LoginWithEmail(
         }
 
         TextField(value = emailText, onValueChange = { emailText = it} )
+
         TextField(value = passwordText, onValueChange = { passwordText = it} )
 
 
