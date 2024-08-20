@@ -1,7 +1,8 @@
-package android.habittracker.ui.component
+package android.habittracker.ui.screen.registration_section.section
 
 import android.habittracker.R
 import android.widget.Toast
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,9 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -50,7 +49,7 @@ fun LoginOrCreateOption(
         CustomLoginOptionButton(
             textButton = LoginOrCreateOptionData().google,
             iconPainter = painterResource(id = R.drawable.google_icon),
-            bgColor = Color(0xFFEBEAEC),
+            bgColor = Color.White,
         ) {
             Toast.makeText(context, "Google", Toast.LENGTH_SHORT).show()
         }
@@ -67,7 +66,7 @@ fun CustomLoginOptionButton(
     bgColor: Color,
     onClick: () -> Unit
 ) {
-    Box(modifier = modifier.padding(vertical = 5.dp)) {
+    Box(modifier = modifier.padding(vertical = 10.dp)) {
 
         Button(
             modifier = modifier
@@ -75,6 +74,7 @@ fun CustomLoginOptionButton(
                 .height(63.dp)
                 .padding(horizontal = 20.dp),
             colors = ButtonDefaults.buttonColors(bgColor),
+            border = BorderStroke(width = 1.dp, color = Color(0xFFEBEAEC)),
             onClick = {
                 onClick()
             }) {
@@ -105,11 +105,6 @@ fun CustomLoginOptionButton(
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
                         color = colorText,
-                        shadow = Shadow(
-                            color = Color(0xFF000000).copy(alpha = 0.25f),
-                            offset = Offset(0f, 4f),
-                            blurRadius = 4f
-                        )
                     )
                 )
             }

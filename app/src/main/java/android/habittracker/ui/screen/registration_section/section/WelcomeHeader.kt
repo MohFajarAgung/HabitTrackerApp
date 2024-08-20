@@ -1,4 +1,4 @@
-package android.habittracker.ui.component
+package android.habittracker.ui.screen.registration_section.section
 
 import android.habittracker.R
 import androidx.compose.foundation.Image

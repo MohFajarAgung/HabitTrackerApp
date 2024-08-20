@@ -1,10 +1,10 @@
 package android.habittracker.ui.screen.registration_section
 
 import android.habittracker.ui.component.CustomTopAppBar
-import android.habittracker.ui.component.LoginOrCreateOption
-import android.habittracker.ui.component.LoginOrSignUpWithEmail
-import android.habittracker.ui.component.LoginOrSignUpWithEmailOption
-import android.habittracker.ui.component.SignInAndSingUpBg
+import android.habittracker.ui.screen.registration_section.section.LoginOrCreateOption
+import android.habittracker.ui.screen.registration_section.section.LoginOrSignUpWithEmail
+import android.habittracker.ui.screen.registration_section.section.LoginOrSignUpWithEmailOption
+import android.habittracker.ui.screen.registration_section.section.SignInAndSingUpBg
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth

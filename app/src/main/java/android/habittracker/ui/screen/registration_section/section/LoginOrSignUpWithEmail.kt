@@ -1,5 +1,6 @@
-package android.habittracker.ui.component
+package android.habittracker.ui.screen.registration_section.section
 
+import android.habittracker.ui.component.CustomButton
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -20,9 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
@@ -54,6 +54,10 @@ fun LoginOrSignUpWithEmail(
         mutableStateOf("")
     }
 
+    val checked = remember {
+        mutableStateOf(false)
+    }
+
     val contex = LocalContext.current
     Column(
         modifier = modifier
@@ -63,17 +67,12 @@ fun LoginOrSignUpWithEmail(
     ) {
 
         Text(
-            modifier = modifier.padding(vertical = 40.dp),
+            modifier = modifier.padding(top = 20.dp, bottom = 30.dp),
             text = textHead,
             style = TextStyle(
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFFA1A4B2),
-                shadow = Shadow(
-                    color = Color(0xFF000000).copy(alpha = 0.25f),
-                    offset = Offset(0f, 4f),
-                    blurRadius = 4f
-                )
             )
         )
         if (textHead == LoginOrSignUpWithEmailOption().SignUp) {
@@ -96,28 +95,36 @@ fun LoginOrSignUpWithEmail(
             value = textPassword.value,
             onValueChange = { textPassword.value = it }
         )
-        Spacer(modifier = modifier.height(30.dp))
 
         if (textHead == LoginOrSignUpWithEmailOption().SignUp) {
+            IHaveReadCheckBox(checked = checked.value) {
+                checked.value = it
+            }
+            Spacer(modifier = modifier.height(20.dp))
             CustomButton(
                 modifier = modifier.fillMaxWidth(),
                 textButton = "LOG IN",
                 btnColor = Color(0xFF8E97FD),
                 textColor = Color(0xFFF6F1FB)
             ) {
-                Toast.makeText(contex, textEmail.value, Toast.LENGTH_SHORT).show()
+                if (checked.value) {
+                    Toast.makeText(contex, textEmail.value, Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(contex, "Check the checkbox", Toast.LENGTH_SHORT).show()
+                }
             }
             BottomAlreadyAndDontHaveAcc(text = "ALREADY HAVE AN ACCOUNT?", textClick = "SIGN IN") {
                 navController.popBackStack()
             }
         } else {
+            Spacer(modifier = modifier.height(20.dp))
             CustomButton(
                 modifier = modifier.fillMaxWidth(),
                 textButton = "LOG IN",
                 btnColor = Color(0xFF8E97FD),
                 textColor = Color(0xFFF6F1FB)
             ) {
-                Toast.makeText(contex, textEmail.value, Toast.LENGTH_SHORT).show()
+
             }
             BottomAlreadyAndDontHaveAcc(text = "DON'T HAVE AN ACCOUNT?", textClick = "SIGN UP") {
                 navController.navigate("signUpScreen")
@@ -176,6 +183,45 @@ fun CustomAuthTextField(
             }
         }
     )
+}
+
+@Composable
+fun IHaveReadCheckBox(
+    modifier: Modifier = Modifier,
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+) {
+
+
+    Box(modifier = modifier.fillMaxWidth()) {
+        Row(modifier = modifier.align(Alignment.CenterStart)) {
+            Text(
+                text = "I have read the",
+                style = TextStyle(
+                    fontStyle = FontStyle.Normal,
+                    fontWeight = FontWeight(500),
+                    color = Color(0xFFA1A4B2),
+                    fontSize = 14.sp,
+//                            fontFamily = Poppins
+                ),
+            )
+            Text(
+                text = " Privace Policy",
+                style = TextStyle(
+                    fontStyle = FontStyle.Normal,
+                    fontWeight = FontWeight(500),
+                    color = Color(0xFF7583CA),
+                    fontSize = 14.sp,
+//                            fontFamily = Poppins
+                ),
+            )
+        }
+        Checkbox(
+            modifier = modifier.align(Alignment.CenterEnd),
+            checked = checked,
+            onCheckedChange = onCheckedChange
+        )
+    }
 }
 
 @Composable

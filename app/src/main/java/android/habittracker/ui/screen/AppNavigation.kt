@@ -1,5 +1,6 @@
 package android.habittracker.ui.screen
 
+import android.habittracker.ui.screen.registration_section.OnBoardingScreen
 import android.habittracker.ui.screen.registration_section.SignInScreen
 import android.habittracker.ui.screen.registration_section.SignUpSreen
 import android.habittracker.ui.screen.registration_section.WelcomeScreen
@@ -17,7 +18,9 @@ fun AppNavigation(
     navHostController: NavHostController
 ){
 
- NavHost(navController = navHostController, startDestination = "welcomeScreen" ){
+ NavHost(navController = navHostController, startDestination = "onBoardingScreen" ){
+
+//     Registration_section
      composable("welcomeScreen"){
          WelcomeScreen(navController = navHostController)
      }
@@ -34,6 +37,13 @@ fun AppNavigation(
      composable("signUpScreen"){
          SignUpSreen(navController = navHostController)
      }
+
+     composable("onBoardingScreen"){
+         OnBoardingScreen(navController = navHostController)
+     }
+
+//
+
  }
 
     
