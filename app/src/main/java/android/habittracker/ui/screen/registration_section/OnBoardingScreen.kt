@@ -4,6 +4,7 @@ package android.habittracker.ui.screen.registration_section
 import android.habittracker.R
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -23,6 +24,7 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
@@ -152,29 +154,19 @@ fun NextPageButton(
         modifier = modifier
             .fillMaxSize()
             .padding(bottom = 70.dp, end = 30.dp)
+        ,
+        contentAlignment = Alignment.BottomEnd
     ) {
-        OutlinedButton(
-            onClick = {
-                onClick()
-            },
-            modifier = Modifier
-                .size(55.dp)
-                .align(Alignment.BottomEnd),  //avoid the oval shape
-            shape = CircleShape,
-            border = BorderStroke(1.dp, Color(0xFFEBEAEC)),
-            contentPadding = PaddingValues(0.dp),  //avoid the little icon
-            colors = ButtonDefaults.outlinedButtonColors(
-                containerColor = Color(0xFF92A3FD),
-                contentColor = Color.White
-            )
-        ) {
-            Icon(
-                modifier = modifier.size(25.dp),
+
+            Image(
                 painter = painterResource(id = R.drawable.next_button_icon),
-                contentDescription = "tombol next"
+                contentDescription = "Icon Next Button Onboarding",
+                modifier = modifier
+                    .size(60.dp)
+                    .clip(CircleShape)
+                    .clickable {
+                        onClick()
+                    }
             )
-        }
-
-
     }
 }
