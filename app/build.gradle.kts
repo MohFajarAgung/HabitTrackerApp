@@ -1,6 +1,8 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("com.google.gms.google-services")
+
 }
 
 android {
@@ -59,6 +61,7 @@ dependencies {
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
+
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
@@ -74,4 +77,14 @@ dependencies {
 
 //    Pager
     implementation ("com.google.accompanist:accompanist-pager:0.30.1")
+
+//   Firebase Auth
+    implementation("com.google.firebase:firebase-auth:23.0.0")
+//   to login with google account
+    implementation ("com.google.android.gms:play-services-auth:21.2.0")
+
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.4")
+    implementation ("androidx.lifecycle:lifecycle-runtime-compose:2.8.4")
+
+
 }

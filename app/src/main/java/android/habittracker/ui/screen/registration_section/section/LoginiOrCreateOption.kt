@@ -36,6 +36,7 @@ data class LoginOrCreateOptionData(
 @Composable
 fun LoginOrCreateOption(
     modifier: Modifier = Modifier,
+    onClick: () -> Unit = {}
 ) {
     val context = LocalContext.current
     Column {
@@ -51,7 +52,8 @@ fun LoginOrCreateOption(
             iconPainter = painterResource(id = R.drawable.google_icon),
             bgColor = Color.White,
         ) {
-            Toast.makeText(context, "Google", Toast.LENGTH_SHORT).show()
+//            Toast.makeText(context, "Google", Toast.LENGTH_SHORT).show()
+            onClick()
         }
 
 

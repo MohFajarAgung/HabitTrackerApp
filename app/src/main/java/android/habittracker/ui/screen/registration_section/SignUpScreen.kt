@@ -25,7 +25,46 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 @Composable
 fun SignUpSreen(
     modifier: Modifier = Modifier,
-    navController: NavController
+    navController: NavController,
+){
+    val systemUiController = rememberSystemUiController()
+
+    SideEffect {
+        systemUiController.setStatusBarColor(
+            color = Color.Transparent
+        )
+    }
+
+    Box{
+        SignInAndSingUpBg()
+        Column {
+            CustomTopAppBar(onClick = {navController.popBackStack()})
+
+            Text(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(20.dp),
+                text = "Create your account",
+                style = TextStyle(
+                    fontSize = 28.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF3F414E),
+                ),
+                textAlign = TextAlign.Center
+            )
+
+            LoginOrCreateOption()
+
+            LoginOrSignUpWithEmail(textHead = LoginOrSignUpWithEmailOption().SignUp, navController =  navController)
+
+
+        }
+    }
+}
+@Composable
+fun SignUpSreenTest(
+    modifier: Modifier = Modifier,
+    navController: NavController,
 ){
     val systemUiController = rememberSystemUiController()
 
