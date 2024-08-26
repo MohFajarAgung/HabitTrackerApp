@@ -1,6 +1,7 @@
 package android.habittracker.ui.screen.registration_section.section
 
 import android.habittracker.ui.component.CustomButton
+import android.habittracker.ui.screen.registration_section.AuthViewModel
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -17,6 +18,8 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -41,7 +44,8 @@ data class LoginOrSignUpWithEmailOption(
 fun LoginOrSignUpWithEmail(
     modifier: Modifier = Modifier,
     textHead: String,
-    navController: NavController
+    navController: NavController,
+    authViewModel: AuthViewModel
 ) {
 
     val textUsername = remember {
@@ -58,7 +62,8 @@ fun LoginOrSignUpWithEmail(
         mutableStateOf(false)
     }
 
-    val contex = LocalContext.current
+    val state by authViewModel.state.collectAsState()
+    val context = LocalContext.current
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -103,14 +108,23 @@ fun LoginOrSignUpWithEmail(
             Spacer(modifier = modifier.height(20.dp))
             CustomButton(
                 modifier = modifier.fillMaxWidth(),
-                textButton = "LOG IN",
+                textButton = "SIGN UP",
                 btnColor = Color(0xFF8E97FD),
                 textColor = Color(0xFFF6F1FB)
             ) {
-                if (checked.value) {
-                    Toast.makeText(contex, textEmail.value, Toast.LENGTH_SHORT).show()
-                } else {
-                    Toast.makeText(contex, "Check the checkbox", Toast.LENGTH_SHORT).show()
+                if (textEmail.value.isNotEmpty() && textPassword.value.isNotEmpty() && textUsername.value.isNotEmpty()) {
+                    if (checked.value) {
+                        authViewModel.signUpWithEmailAndPassword(
+                            navController = navController,
+                            context = context,
+                            email = textEmail.value,
+                            password = textPassword.value
+                        )
+                    } else {
+                        Toast.makeText(context, "Check the checkbox", Toast.LENGTH_SHORT).show()
+                    }
+                }else{
+                    Toast.makeText(context, "form cannot be empty", Toast.LENGTH_SHORT).show()
                 }
             }
             BottomAlreadyAndDontHaveAcc(text = "ALREADY HAVE AN ACCOUNT?", textClick = "SIGN IN") {
@@ -124,7 +138,16 @@ fun LoginOrSignUpWithEmail(
                 btnColor = Color(0xFF8E97FD),
                 textColor = Color(0xFFF6F1FB)
             ) {
-
+             if(textEmail.value.isNotEmpty() && textPassword.value.isNotEmpty()){
+                 authViewModel.signInWithEmailAndPassword(
+                     navController = navController,
+                     context = context,
+                     email = textEmail.value,
+                     password =  textPassword.value
+                 )
+             }else{
+                 Toast.makeText(context, "form cannot be empty", Toast.LENGTH_SHORT).show()
+             }
             }
             BottomAlreadyAndDontHaveAcc(text = "DON'T HAVE AN ACCOUNT?", textClick = "SIGN UP") {
                 navController.navigate("signUpScreen")

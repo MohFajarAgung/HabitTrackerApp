@@ -33,59 +33,35 @@ fun AppNavigation(
     val context = LocalContext.current
     val state by authViewModel.state.collectAsState()
 
-    val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.StartIntentSenderForResult() ,
-        onResult = {result ->
-            if(result.resultCode == Activity.RESULT_OK){
-                authViewModel.handleSignInResult(result.data)
-            }
-        })
 
-
-
-    NavHost(navController = navHostController, startDestination ="welcomeScreen") {
+    NavHost(navController = navHostController, startDestination = "welcomeScreen") {
 
 //     Registration_section
         composable("welcomeScreen") {
 //            Ketika state berubah dan bernilai true maka pindah ke dashboardScreen
-            LaunchedEffect(state.isSignSuccessful){
-                if(state.isSignSuccessful){
+            LaunchedEffect(state.isSignSuccessful) {
+                if (state.isSignSuccessful) {
                     Toast.makeText(context, "Signed Successful", Toast.LENGTH_SHORT).show()
-                    navHostController.navigate("dashboardScreen"){
-                        popUpTo(navHostController.graph.startDestinationId){
+                    navHostController.navigate("dashboardScreen") {
+                        popUpTo(navHostController.graph.startDestinationId) {
                             inclusive = true
                         }
                     }
                 }
             }
-            LaunchedEffect(key1 = Unit){
+//            Cek signIn status
+            LaunchedEffect(key1 = Unit) {
                 authViewModel.checkSignInStatus()
             }
             WelcomeScreen(navController = navHostController)
         }
         composable("signInScreen") {
-//            Ketika state berubah dan bernilai true maka pindah ke onBoardingScreen
-           LaunchedEffect(state.isSignSuccessful){
-               if(state.isSignSuccessful){
-                   Toast.makeText(context, "Login Successful", Toast.LENGTH_SHORT).show()
-                   navHostController.navigate("onBoardingScreen"){
-                       popUpTo(navHostController.graph.startDestinationId){
-                           inclusive = true
-                       }
-                   }
-               }
-           }
-
-                    SignInScreen(navController = navHostController, onClick = {
-                        authViewModel.signInWithGoogle(context){ intentSender ->
-                            intentSender?.let {
-                                launcher.launch(IntentSenderRequest.Builder(it).build())
-                            }
-                        }
-                    })
+            SignInScreen(
+                navController = navHostController, authViewModel = authViewModel
+            )
         }
         composable("signUpScreen") {
-            SignUpSreen(navController = navHostController)
+            SignUpSreen(navController = navHostController, authViewModel = authViewModel)
         }
 
         composable("onBoardingScreen") {
@@ -94,17 +70,19 @@ fun AppNavigation(
 
 //   Dashboard
 
-        composable ("dashboardScreen"){
-            DashboardScreen(logOut = {
-              authViewModel.resetState()
-                authViewModel.logOut()
-                Toast.makeText(context, "Logout Successful", Toast.LENGTH_SHORT).show()
-                navHostController.navigate("welcomeScreen"){
-                    popUpTo(navHostController.graph.startDestinationId){
-                        inclusive = true
+        composable("dashboardScreen") {
+            DashboardScreen(
+                logOut = {
+                    authViewModel.resetState()
+                    authViewModel.logOut()
+                    Toast.makeText(context, "Logout Successful", Toast.LENGTH_SHORT).show()
+                    navHostController.navigate("welcomeScreen") {
+                        popUpTo(navHostController.graph.startDestinationId) {
+                            inclusive = true
+                        }
                     }
-                }
-            },)
+                },
+            )
         }
 
     }

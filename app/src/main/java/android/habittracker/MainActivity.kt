@@ -1,6 +1,6 @@
 package android.habittracker
 
-import android.habittracker.model.auth.GoogleAuthUiClient
+import android.habittracker.model.auth.FirebaseAuthClient
 import android.habittracker.ui.screen.AppNavigation
 import android.habittracker.ui.screen.ViewModelFactory
 import android.habittracker.ui.screen.registration_section.AuthViewModel
@@ -19,8 +19,8 @@ import com.google.android.gms.auth.api.identity.Identity
 
 class MainActivity : ComponentActivity() {
 
-    private val googleAuthClient by lazy{
-        GoogleAuthUiClient(
+    private val firebaseAuthClient by lazy{
+        FirebaseAuthClient(
             context = applicationContext,
             onTapClient = Identity.getSignInClient(applicationContext)
         )
@@ -39,7 +39,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val navController = rememberNavController()
-                    val authViewModel : AuthViewModel = viewModel(factory = ViewModelFactory(googleAuthClient) )
+                    val authViewModel : AuthViewModel = viewModel(factory = ViewModelFactory(firebaseAuthClient) )
 
                     AppNavigation(
                         navHostController = navController,

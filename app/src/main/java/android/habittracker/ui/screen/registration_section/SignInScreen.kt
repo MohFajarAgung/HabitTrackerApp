@@ -41,7 +41,7 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 fun SignInScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
-    onClick : () -> Unit
+    authViewModel: AuthViewModel
 ) {
     val systemUiController = rememberSystemUiController()
 
@@ -69,9 +69,9 @@ fun SignInScreen(
                 textAlign = TextAlign.Center
             )
 
-            LoginOrCreateOption(onClick = {onClick()})
+            LoginOrCreateOption(authViewModel = authViewModel, navController = navController)
             
-            LoginOrSignUpWithEmail(textHead = LoginOrSignUpWithEmailOption().logIn, navController =  navController)
+            LoginOrSignUpWithEmail(textHead = LoginOrSignUpWithEmailOption().logIn, navController =  navController, authViewModel = authViewModel)
 
 
         }

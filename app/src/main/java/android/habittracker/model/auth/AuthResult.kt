@@ -1,6 +1,6 @@
 package android.habittracker.model.auth
 
-data class SignInResult(
+data class AuthResult(
     val data : UserData?,
     val errorMessage : String?
 )
@@ -10,4 +10,6 @@ data class UserData(
     val username : String?,
     val profilePictureUrl : String?
 )
+
+
 

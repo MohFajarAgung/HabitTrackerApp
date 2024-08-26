@@ -4,23 +4,23 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
 import android.habittracker.R
-import androidx.compose.ui.res.stringResource
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.BeginSignInRequest.GoogleIdTokenRequestOptions
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.auth.auth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.tasks.await
 import java.util.concurrent.CancellationException
 
-class GoogleAuthUiClient(
+class FirebaseAuthClient(
     private val context: Context,
     private val onTapClient : SignInClient
 ) {
 
     private val auth = Firebase.auth
+
+//    SignIn menggunakan akun google
     suspend fun signInWithGoogle() : IntentSender? {
         val result = try {
                   onTapClient.beginSignIn(
@@ -47,7 +47,8 @@ class GoogleAuthUiClient(
             .build()
     }
 
-    suspend fun signInWithIntent (intent: Intent) : SignInResult {
+//    fungsi untuk login dengan google setelah mendapatkan credentials saat fungsi signInWithGoogle sudah dijalankan
+    suspend fun signInWithIntent (intent: Intent) : AuthResult {
         val credential = onTapClient.getSignInCredentialFromIntent(intent)
         val googleIdToken = credential.googleIdToken
         val googleCredentials = GoogleAuthProvider.getCredential(googleIdToken, null)
@@ -55,7 +56,7 @@ class GoogleAuthUiClient(
         return try {
 //            auth.setLanguageCode("id")
             val user = auth.signInWithCredential(googleCredentials).await().user
-            SignInResult(
+            AuthResult(
                 data = user?.run {
                     UserData(
                         userId = uid,
@@ -69,12 +70,58 @@ class GoogleAuthUiClient(
         }catch (e : Exception){
             e.printStackTrace()
             if(e is CancellationException) throw e
-            SignInResult(
+            AuthResult(
                 data = null,
                 errorMessage = e.message
             )
         }
     }
+
+
+//    SignIn dengan menggunakan email dan password
+    suspend fun signInWithEmailAndPassword(email : String, password: String) : AuthResult {
+        return try {
+            val user = auth.signInWithEmailAndPassword(email, password).await().user
+            AuthResult(
+                data = user?.run {
+                    UserData(
+                        userId = uid,
+                        username = displayName,
+                        profilePictureUrl = photoUrl?.toString()
+                    )
+                },
+                errorMessage = null
+            )
+        }catch (e : Exception){
+            e.printStackTrace()
+            if(e is CancellationException) throw e
+            AuthResult(
+                data = null,
+                errorMessage = e.message
+            )
+        }
+    }
+
+//    SignUp dengan menggunakan email dan password
+    suspend fun signUpWithEmailAndPassword(email : String, password: String): AuthResult {
+        return try {
+            auth.createUserWithEmailAndPassword(email, password).await()
+             auth.signOut()
+            AuthResult(
+                data = null,
+                errorMessage = null,
+            )
+        }catch (e: Exception){
+             e.printStackTrace()
+            if(e is CancellationException) throw e
+            AuthResult(
+                data = null,
+                errorMessage = e.message
+            )
+
+        }
+    }
+
 
     suspend fun signOut(){
         try {

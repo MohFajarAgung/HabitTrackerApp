@@ -1,7 +1,12 @@
 package android.habittracker.ui.screen.registration_section.section
 
+import android.app.Activity
 import android.habittracker.R
+import android.habittracker.ui.screen.registration_section.AuthViewModel
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.IntentSenderRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -17,6 +22,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,6 +34,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 
 data class LoginOrCreateOptionData(
     val facebook : String = "CONTINUE WITH FACEBOOK",
@@ -36,9 +44,21 @@ data class LoginOrCreateOptionData(
 @Composable
 fun LoginOrCreateOption(
     modifier: Modifier = Modifier,
-    onClick: () -> Unit = {}
+    authViewModel: AuthViewModel,
+    navController: NavController
 ) {
     val context = LocalContext.current
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartIntentSenderForResult() ,
+        onResult = {result ->
+            if(result.resultCode == Activity.RESULT_OK){
+                authViewModel.handleSignInResult(
+                    context =  context,
+                    navController = navController,
+                    intent  = result.data)
+            }
+        })
     Column {
         CustomLoginOptionButton(
             textButton = LoginOrCreateOptionData().facebook,
@@ -52,8 +72,12 @@ fun LoginOrCreateOption(
             iconPainter = painterResource(id = R.drawable.google_icon),
             bgColor = Color.White,
         ) {
-//            Toast.makeText(context, "Google", Toast.LENGTH_SHORT).show()
-            onClick()
+            authViewModel.signInWithGoogle(context){ intentSender ->
+                intentSender?.let {
+                    launcher.launch(IntentSenderRequest.Builder(it).build())
+
+                }
+            }
         }
 
 
