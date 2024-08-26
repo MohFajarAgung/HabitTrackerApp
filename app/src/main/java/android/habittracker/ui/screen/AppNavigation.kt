@@ -71,16 +71,21 @@ fun AppNavigation(
 //   Dashboard
 
         composable("dashboardScreen") {
-            DashboardScreen(
-                logOut = {
-                    authViewModel.resetState()
-                    authViewModel.logOut()
+            LaunchedEffect(state.isSignSuccessful) {
+                if (!state.isSignSuccessful) {
                     Toast.makeText(context, "Logout Successful", Toast.LENGTH_SHORT).show()
                     navHostController.navigate("welcomeScreen") {
                         popUpTo(navHostController.graph.startDestinationId) {
                             inclusive = true
                         }
                     }
+                }
+            }
+            DashboardScreen(
+                logOut = {
+                    authViewModel.resetState()
+                    authViewModel.logOut()
+
                 },
             )
         }
