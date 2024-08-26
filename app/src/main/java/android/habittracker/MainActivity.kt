@@ -2,6 +2,7 @@ package android.habittracker
 
 import android.habittracker.model.auth.GoogleAuthUiClient
 import android.habittracker.ui.screen.AppNavigation
+import android.habittracker.ui.screen.ViewModelFactory
 import android.habittracker.ui.screen.registration_section.AuthViewModel
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -11,14 +12,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import android.habittracker.ui.theme.HabitTrackerTheme
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.WindowCompat
-import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.google.android.gms.auth.api.identity.Identity
-import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
 
@@ -42,10 +39,11 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val navController = rememberNavController()
-                    val authViewModel = viewModel<AuthViewModel>()
+                    val authViewModel : AuthViewModel = viewModel(factory = ViewModelFactory(googleAuthClient) )
 
                     AppNavigation(
-                        navHostController = navController, authViewModel = authViewModel, googleAuthUiClient = googleAuthClient, lifecycleScope = lifecycleScope,
+                        navHostController = navController,
+                        authViewModel = authViewModel,
                         )
                 }
             }

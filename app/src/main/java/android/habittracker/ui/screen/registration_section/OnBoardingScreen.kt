@@ -94,8 +94,12 @@ fun OnBoardingScreen(
                 if (pagerState.currentPage < pagerState.pageCount - 1) {
                    pagerState.animateScrollToPage(pagerState.currentPage + 1)
                 }else{
-//                    ke screen selanjutnya
-                    navController.navigate("dashBoardScreen")
+//                    ke DashBoardScreen
+                    navController.navigate("dashBoardScreen"){
+                       popUpTo(navController.graph.startDestinationId){
+                           inclusive = true
+                       }
+                    }
                 }
             }
         })

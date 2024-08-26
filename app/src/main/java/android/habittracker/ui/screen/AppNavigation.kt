@@ -1,7 +1,6 @@
 package android.habittracker.ui.screen
 
 import android.app.Activity
-import android.habittracker.model.auth.GoogleAuthUiClient
 import android.habittracker.ui.screen.dashboard.DashboardScreen
 import android.habittracker.ui.screen.registration_section.AuthViewModel
 import android.habittracker.ui.screen.registration_section.OnBoardingScreen
@@ -16,84 +15,74 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import kotlinx.coroutines.launch
 
 @Composable
 fun AppNavigation(
     modifier: Modifier = Modifier,
     navHostController: NavHostController,
     authViewModel: AuthViewModel,
-    googleAuthUiClient: GoogleAuthUiClient,
-    lifecycleScope: LifecycleCoroutineScope
 ) {
 
     val context = LocalContext.current
+    val state by authViewModel.state.collectAsState()
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartIntentSenderForResult() ,
+        onResult = {result ->
+            if(result.resultCode == Activity.RESULT_OK){
+                authViewModel.handleSignInResult(result.data)
+            }
+        })
+
+
 
     NavHost(navController = navHostController, startDestination ="welcomeScreen") {
 
 //     Registration_section
         composable("welcomeScreen") {
-            LaunchedEffect(key1 = Unit) {
-                if (googleAuthUiClient.getSignInUser() != null) {
-                    navHostController.navigate("dashboardScreen")
+//            Ketika state berubah dan bernilai true maka pindah ke dashboardScreen
+            LaunchedEffect(state.isSignSuccessful){
+                if(state.isSignSuccessful){
+                    Toast.makeText(context, "Signed Successful", Toast.LENGTH_SHORT).show()
+                    navHostController.navigate("dashboardScreen"){
+                        popUpTo(navHostController.graph.startDestinationId){
+                            inclusive = true
+                        }
+                    }
                 }
+            }
+            LaunchedEffect(key1 = Unit){
+                authViewModel.checkSignInStatus()
             }
             WelcomeScreen(navController = navHostController)
         }
         composable("signInScreen") {
-            val state by authViewModel.state.collectAsStateWithLifecycle()
-
-            val launcher = rememberLauncherForActivityResult(
-                contract = ActivityResultContracts.StartIntentSenderForResult(),
-                onResult = { result ->
-                    if (result.resultCode == Activity.RESULT_OK) {
-                        lifecycleScope.launch {
-                            val signResult = googleAuthUiClient.signInWithIntent(
-                                intent = result.data ?: return@launch
-                            )
-                            authViewModel.onSignInResult(signResult)
-                        }
-                    }
-                }
-            )
-
-            LaunchedEffect(key1 = state.isSignSuccessful) {
-                if (state.isSignSuccessful) {
-                    Toast.makeText(context, "Login Successful", Toast.LENGTH_SHORT).show()
-                    navHostController.navigate("onBoardingScreen")
-                    authViewModel.resetState()
-                }
-            }
-
-
-
-            Box {
-
-                Column {
-
+//            Ketika state berubah dan bernilai true maka pindah ke onBoardingScreen
+           LaunchedEffect(state.isSignSuccessful){
+               if(state.isSignSuccessful){
+                   Toast.makeText(context, "Login Successful", Toast.LENGTH_SHORT).show()
+                   navHostController.navigate("onBoardingScreen"){
+                       popUpTo(navHostController.graph.startDestinationId){
+                           inclusive = true
+                       }
+                   }
+               }
+           }
 
                     SignInScreen(navController = navHostController, onClick = {
-                        lifecycleScope.launch {
-                            val signInIntentSender = googleAuthUiClient.signIn()
-                            launcher.launch(
-                                IntentSenderRequest.Builder(
-                                    signInIntentSender ?: return@launch
-                                ).build()
-                            )
+                        authViewModel.signInWithGoogle(context){ intentSender ->
+                            intentSender?.let {
+                                launcher.launch(IntentSenderRequest.Builder(it).build())
+                            }
                         }
                     })
-                }
-            }
         }
         composable("signUpScreen") {
             SignUpSreen(navController = navHostController)
@@ -106,15 +95,15 @@ fun AppNavigation(
 //   Dashboard
 
         composable ("dashboardScreen"){
-
             DashboardScreen(logOut = {
-                lifecycleScope.launch {
-                    googleAuthUiClient.signOut()
+              authViewModel.resetState()
+                authViewModel.logOut()
+                Toast.makeText(context, "Logout Successful", Toast.LENGTH_SHORT).show()
+                navHostController.navigate("welcomeScreen"){
+                    popUpTo(navHostController.graph.startDestinationId){
+                        inclusive = true
+                    }
                 }
-
-                Toast.makeText(context, "Signed Out" , Toast.LENGTH_SHORT).show()
-
-                navHostController.navigate("welcomeScreen")
             },)
         }
 

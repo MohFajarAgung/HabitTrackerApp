@@ -21,8 +21,7 @@ class GoogleAuthUiClient(
 ) {
 
     private val auth = Firebase.auth
-
-    suspend fun signIn() : IntentSender? {
+    suspend fun signInWithGoogle() : IntentSender? {
         val result = try {
                   onTapClient.beginSignIn(
                       buildSignInRequest()
@@ -54,6 +53,7 @@ class GoogleAuthUiClient(
         val googleCredentials = GoogleAuthProvider.getCredential(googleIdToken, null)
 
         return try {
+//            auth.setLanguageCode("id")
             val user = auth.signInWithCredential(googleCredentials).await().user
             SignInResult(
                 data = user?.run {
