@@ -1,6 +1,7 @@
 package android.habittracker.ui.screen
 
 import android.app.Activity
+import android.habittracker.ui.screen.dashboard.DashBoardViewModel
 import android.habittracker.ui.screen.dashboard.DashboardScreen
 import android.habittracker.ui.screen.dashboard.HomeScreen
 import android.habittracker.ui.screen.registration_section.AuthViewModel
@@ -33,6 +34,7 @@ fun AppNavigation(
     modifier: Modifier = Modifier,
     navHostController: NavHostController,
     authViewModel: AuthViewModel,
+    dashBoardViewModel: DashBoardViewModel
 ) {
 
     val context = LocalContext.current
@@ -88,7 +90,7 @@ fun AppNavigation(
         }
 
         composable("homeScreen"){
-            HomeScreen(navController = navHostController)
+            HomeScreen(navController = navHostController, dashBoardViewModel = dashBoardViewModel)
         }
 
 

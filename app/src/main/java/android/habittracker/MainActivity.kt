@@ -3,6 +3,7 @@ package android.habittracker
 import android.habittracker.model.firebase.auth.FirebaseAuthClient
 import android.habittracker.ui.screen.AppNavigation
 import android.habittracker.ui.screen.ViewModelFactory
+import android.habittracker.ui.screen.dashboard.DashBoardViewModel
 import android.habittracker.ui.screen.registration_section.AuthViewModel
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -41,10 +42,11 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val navController = rememberNavController()
                     val authViewModel : AuthViewModel = viewModel(factory = ViewModelFactory(firebaseAuthClient) )
-
+                    val dashBoardViewModel : DashBoardViewModel = viewModel(factory = ViewModelFactory(firebaseAuthClient))
                     AppNavigation(
                         navHostController = navController,
                         authViewModel = authViewModel,
+                        dashBoardViewModel = dashBoardViewModel
                         )
                 }
             }

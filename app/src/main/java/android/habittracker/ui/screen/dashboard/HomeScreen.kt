@@ -3,6 +3,7 @@ package android.habittracker.ui.screen.dashboard
 import android.habittracker.ui.component.CustomTopAppBar
 import android.habittracker.ui.screen.SectionData
 import android.habittracker.ui.screen.dashboard.component.CustomDateScroller
+import android.habittracker.ui.screen.dashboard.component.CustomHabitsGrid
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,7 +29,8 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    navController: NavController
+    navController: NavController,
+    dashBoardViewModel: DashBoardViewModel
 ) {
     val systemUiController = rememberSystemUiController()
 
@@ -59,6 +61,8 @@ fun HomeScreen(
             )
             Spacer(modifier = modifier.height(20.dp))
             CustomDateScroller()
+            Spacer(modifier = modifier.height(40.dp))
+            CustomHabitsGrid(dashBoardViewModel = dashBoardViewModel)
         }
     }
 }
