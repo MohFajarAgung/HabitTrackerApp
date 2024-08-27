@@ -7,19 +7,23 @@ import android.habittracker.ui.screen.registration_section.OnBoardingScreen
 import android.habittracker.ui.screen.registration_section.SignInScreen
 import android.habittracker.ui.screen.registration_section.SignUpSreen
 import android.habittracker.ui.screen.registration_section.WelcomeScreen
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import androidx.navigation.NavOptions
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 
@@ -36,7 +40,9 @@ fun AppNavigation(
 
     NavHost(navController = navHostController, startDestination = "welcomeScreen") {
 
+
 //     Registration_section
+
         composable("welcomeScreen") {
 //            Ketika state berubah dan bernilai true maka pindah ke dashboardScreen
             LaunchedEffect(state.isSignSuccessful) {
@@ -68,24 +74,14 @@ fun AppNavigation(
             OnBoardingScreen(navController = navHostController)
         }
 
+
 //   Dashboard
 
         composable("dashboardScreen") {
-            LaunchedEffect(state.isSignSuccessful) {
-                if (!state.isSignSuccessful) {
-                    Toast.makeText(context, "Logout Successful", Toast.LENGTH_SHORT).show()
-                    navHostController.navigate("welcomeScreen") {
-                        popUpTo(navHostController.graph.startDestinationId) {
-                            inclusive = true
-                        }
-                    }
-                }
-            }
+
             DashboardScreen(
                 logOut = {
-                    authViewModel.resetState()
-                    authViewModel.logOut()
-
+                    authViewModel.logOut(context = context, navController =  navHostController)
                 },
             )
         }
@@ -94,3 +90,4 @@ fun AppNavigation(
 
 
 }
+

@@ -29,6 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
@@ -96,7 +97,7 @@ fun OnBoardingScreen(
                 }else{
 //                    ke DashBoardScreen
                     navController.navigate("dashBoardScreen"){
-                       popUpTo(navController.graph.startDestinationId){
+                       popUpTo("onBoardingScreen"){
                            inclusive = true
                        }
                     }

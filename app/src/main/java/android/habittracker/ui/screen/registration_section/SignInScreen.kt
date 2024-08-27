@@ -1,34 +1,13 @@
 package android.habittracker.ui.screen.registration_section
 
 import android.habittracker.ui.component.CustomTopAppBar
-import android.habittracker.ui.screen.registration_section.section.LoginOrCreateOption
-import android.habittracker.ui.screen.registration_section.section.LoginOrCreateOptionData
-import android.habittracker.ui.screen.registration_section.section.LoginOrSignUpWithEmail
-import android.habittracker.ui.screen.registration_section.section.LoginOrSignUpWithEmailOption
-import android.habittracker.ui.screen.registration_section.section.SignInAndSingUpBg
-import android.widget.Toast
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
+import android.habittracker.ui.screen.registration_section.section.*
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -44,6 +23,9 @@ fun SignInScreen(
     authViewModel: AuthViewModel
 ) {
     val systemUiController = rememberSystemUiController()
+    val isLoading by authViewModel.isLoading.collectAsState()
+
+
 
     SideEffect {
         systemUiController.setStatusBarColor(
@@ -52,6 +34,7 @@ fun SignInScreen(
     }
 
     Box{
+
         SignInAndSingUpBg()
         Column {
             CustomTopAppBar(onClick = {navController.popBackStack()})
@@ -70,11 +53,17 @@ fun SignInScreen(
             )
 
             LoginOrCreateOption(authViewModel = authViewModel, navController = navController)
-            
+
             LoginOrSignUpWithEmail(textHead = LoginOrSignUpWithEmailOption().logIn, navController =  navController, authViewModel = authViewModel)
 
 
         }
+
+      if(isLoading){
+          Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center){
+              CircularProgressIndicator()
+          }
+      }
     }
 
 

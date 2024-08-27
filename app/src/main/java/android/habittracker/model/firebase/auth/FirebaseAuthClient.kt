@@ -1,9 +1,10 @@
-package android.habittracker.model.auth
+package android.habittracker.model.firebase.auth
 
 import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
 import android.habittracker.R
+import android.service.credentials.BeginCreateCredentialRequest
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.BeginSignInRequest.GoogleIdTokenRequestOptions
 import com.google.android.gms.auth.api.identity.SignInClient
@@ -15,26 +16,47 @@ import java.util.concurrent.CancellationException
 
 class FirebaseAuthClient(
     private val context: Context,
-    private val onTapClient : SignInClient
+    private val onTapClient: SignInClient
 ) {
 
     private val auth = Firebase.auth
 
-//    SignIn menggunakan akun google
-    suspend fun signInWithGoogle() : IntentSender? {
+    //    SignIn menggunakan akun facebook
+//    suspend fun signInWithFacebook(): IntentSender? {
+//        val result = try {
+//            onTapClient.beginSignIn(
+//                buildSignInFacebookRequest()
+//            ).await()
+//
+//        } catch (e: Exception) {
+//            e.printStackTrace()
+//            if (e is CancellationException) throw e
+//            null
+//        }
+//        return result?.pendingIntent?.intentSender
+//    }
+//
+//    private fun buildSignInFacebookRequest(): BeginSignInRequest {
+//        return  BeginSignInRequest.Builder()
+//    }
+
+
+    //    SignIn menggunakan akun google
+    suspend fun signInWithGoogle(): IntentSender? {
         val result = try {
-                  onTapClient.beginSignIn(
-                      buildSignInRequest()
-                  ).await()
-        }catch (e: Exception){
+            onTapClient.beginSignIn(
+                buildSignInGoogleRequest()
+            ).await()
+        } catch (e: Exception) {
             e.printStackTrace()
-            if(e is CancellationException) throw e
+            if (e is CancellationException) throw e
             null
         }
         return result?.pendingIntent?.intentSender
     }
 
-    private fun buildSignInRequest() : BeginSignInRequest {
+    //    Funsi untuk build sign in request
+    private fun buildSignInGoogleRequest(): BeginSignInRequest {
         return BeginSignInRequest.Builder()
             .setGoogleIdTokenRequestOptions(
                 GoogleIdTokenRequestOptions.builder()
@@ -47,8 +69,8 @@ class FirebaseAuthClient(
             .build()
     }
 
-//    fungsi untuk login dengan google setelah mendapatkan credentials saat fungsi signInWithGoogle sudah dijalankan
-    suspend fun signInWithIntent (intent: Intent) : AuthResult {
+    //    fungsi untuk login dengan google setelah mendapatkan credentials saat fungsi signInWithGoogle sudah dijalankan
+    suspend fun signInWithIntent(intent: Intent): AuthResult {
         val credential = onTapClient.getSignInCredentialFromIntent(intent)
         val googleIdToken = credential.googleIdToken
         val googleCredentials = GoogleAuthProvider.getCredential(googleIdToken, null)
@@ -67,9 +89,9 @@ class FirebaseAuthClient(
                 errorMessage = null
             )
 
-        }catch (e : Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
-            if(e is CancellationException) throw e
+            if (e is CancellationException) throw e
             AuthResult(
                 data = null,
                 errorMessage = e.message
@@ -78,8 +100,8 @@ class FirebaseAuthClient(
     }
 
 
-//    SignIn dengan menggunakan email dan password
-    suspend fun signInWithEmailAndPassword(email : String, password: String) : AuthResult {
+    //    SignIn dengan menggunakan email dan password
+    suspend fun signInWithEmailAndPassword(email: String, password: String): AuthResult {
         return try {
             val user = auth.signInWithEmailAndPassword(email, password).await().user
             AuthResult(
@@ -92,9 +114,9 @@ class FirebaseAuthClient(
                 },
                 errorMessage = null
             )
-        }catch (e : Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
-            if(e is CancellationException) throw e
+            if (e is CancellationException) throw e
             AuthResult(
                 data = null,
                 errorMessage = e.message
@@ -102,18 +124,18 @@ class FirebaseAuthClient(
         }
     }
 
-//    SignUp dengan menggunakan email dan password
-    suspend fun signUpWithEmailAndPassword(email : String, password: String): AuthResult {
+    //    SignUp dengan menggunakan email dan password
+    suspend fun signUpWithEmailAndPassword(email: String, password: String): AuthResult {
         return try {
             auth.createUserWithEmailAndPassword(email, password).await()
-             auth.signOut()
+            auth.signOut()
             AuthResult(
                 data = null,
                 errorMessage = null,
             )
-        }catch (e: Exception){
-             e.printStackTrace()
-            if(e is CancellationException) throw e
+        } catch (e: Exception) {
+            e.printStackTrace()
+            if (e is CancellationException) throw e
             AuthResult(
                 data = null,
                 errorMessage = e.message
@@ -123,17 +145,19 @@ class FirebaseAuthClient(
     }
 
 
-    suspend fun signOut(){
-        try {
+    suspend fun signOut(): AuthResult {
+        return  try {
             onTapClient.signOut().await()
             auth.signOut()
-        }catch (e : Exception){
+            AuthResult(data = null, errorMessage = null)
+        } catch (e: Exception) {
             e.printStackTrace()
-            if(e is CancellationException) throw e
+            if (e is CancellationException) throw e
+            AuthResult(data = null, errorMessage = e.message)
         }
     }
 
-    fun getSignInUser() : UserData? = auth.currentUser?.run {
+    fun getSignInUser(): UserData? = auth.currentUser?.run {
         UserData(
             userId = uid,
             username = displayName,

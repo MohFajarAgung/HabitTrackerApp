@@ -22,8 +22,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -56,7 +54,7 @@ fun LoginOrCreateOption(
                 authViewModel.handleSignInResult(
                     context =  context,
                     navController = navController,
-                    intent  = result.data)
+                    intent = result.data)
             }
         })
     Column {
@@ -65,7 +63,7 @@ fun LoginOrCreateOption(
             iconPainter = painterResource(id = R.drawable.facebook_icon),
             bgColor = Color(0xFF7583CA),
         ) {
-            Toast.makeText(context, "Facebook", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Belum Tersedia", Toast.LENGTH_SHORT).show()
         }
         CustomLoginOptionButton(
             textButton = LoginOrCreateOptionData().google,

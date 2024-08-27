@@ -1,6 +1,6 @@
 package android.habittracker
 
-import android.habittracker.model.auth.FirebaseAuthClient
+import android.habittracker.model.firebase.auth.FirebaseAuthClient
 import android.habittracker.ui.screen.AppNavigation
 import android.habittracker.ui.screen.ViewModelFactory
 import android.habittracker.ui.screen.registration_section.AuthViewModel
@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import android.habittracker.ui.theme.HabitTrackerTheme
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.google.android.gms.auth.api.identity.Identity
 

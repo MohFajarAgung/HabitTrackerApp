@@ -1,6 +1,6 @@
 package android.habittracker.ui.screen
 
-import android.habittracker.model.auth.FirebaseAuthClient
+import android.habittracker.model.firebase.auth.FirebaseAuthClient
 import android.habittracker.ui.screen.registration_section.AuthViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
