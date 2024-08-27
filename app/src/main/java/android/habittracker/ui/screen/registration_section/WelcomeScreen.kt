@@ -1,8 +1,8 @@
 package android.habittracker.ui.screen.registration_section
 
 import android.habittracker.ui.component.CustomButton
-import android.habittracker.ui.screen.registration_section.section.WelcomeHeader
-import android.habittracker.ui.screen.registration_section.section.WelcomeImage
+import android.habittracker.ui.screen.registration_section.component.WelcomeHeader
+import android.habittracker.ui.screen.registration_section.component.WelcomeImage
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,7 +16,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 

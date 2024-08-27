@@ -1,4 +1,4 @@
-package android.habittracker.ui.screen.registration_section.section
+package android.habittracker.ui.screen.registration_section.component
 
 import android.habittracker.ui.component.CustomButton
 import android.habittracker.ui.screen.registration_section.AuthViewModel

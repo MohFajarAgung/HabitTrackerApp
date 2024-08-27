@@ -1,7 +1,8 @@
 package android.habittracker.ui.screen.registration_section
 
 import android.habittracker.ui.component.CustomTopAppBar
-import android.habittracker.ui.screen.registration_section.section.*
+import android.habittracker.ui.screen.SectionData
+import android.habittracker.ui.screen.registration_section.component.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -26,7 +27,6 @@ fun SignInScreen(
     val isLoading by authViewModel.isLoading.collectAsState()
 
 
-
     SideEffect {
         systemUiController.setStatusBarColor(
             color = Color.Transparent
@@ -37,7 +37,7 @@ fun SignInScreen(
 
         SignInAndSingUpBg()
         Column {
-            CustomTopAppBar(onClick = {navController.popBackStack()})
+            CustomTopAppBar(onClick = {navController.popBackStack()}, topAppBarForSection = SectionData().registration)
 
             Text(
                 modifier = modifier

@@ -2,6 +2,7 @@ package android.habittracker.ui.screen
 
 import android.app.Activity
 import android.habittracker.ui.screen.dashboard.DashboardScreen
+import android.habittracker.ui.screen.dashboard.HomeScreen
 import android.habittracker.ui.screen.registration_section.AuthViewModel
 import android.habittracker.ui.screen.registration_section.OnBoardingScreen
 import android.habittracker.ui.screen.registration_section.SignInScreen
@@ -38,7 +39,7 @@ fun AppNavigation(
     val state by authViewModel.state.collectAsState()
 
 
-    NavHost(navController = navHostController, startDestination = "welcomeScreen") {
+    NavHost(navController = navHostController, startDestination = "homeScreen") {
 
 
 //     Registration_section
@@ -85,6 +86,11 @@ fun AppNavigation(
                 },
             )
         }
+
+        composable("homeScreen"){
+            HomeScreen(navController = navHostController)
+        }
+
 
     }
 

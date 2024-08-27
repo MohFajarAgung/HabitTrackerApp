@@ -1,4 +1,4 @@
-package android.habittracker.ui.screen.registration_section.section
+package android.habittracker.ui.screen.registration_section.component
 
 import android.app.Activity
 import android.habittracker.R

@@ -1,7 +1,8 @@
 package android.habittracker.ui.screen.registration_section
 
 import android.habittracker.ui.component.CustomTopAppBar
-import android.habittracker.ui.screen.registration_section.section.*
+import android.habittracker.ui.screen.SectionData
+import android.habittracker.ui.screen.registration_section.component.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -14,7 +15,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
@@ -35,7 +35,7 @@ fun SignUpSreen(
     Box{
         SignInAndSingUpBg()
         Column {
-            CustomTopAppBar(onClick = {navController.popBackStack()})
+            CustomTopAppBar(onClick = {navController.popBackStack()},topAppBarForSection = SectionData().registration)
 
             Text(
                 modifier = modifier
