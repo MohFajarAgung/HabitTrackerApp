@@ -3,6 +3,7 @@ package android.habittracker.ui.component
 import android.habittracker.R
 import android.habittracker.ui.screen.SectionData
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -25,24 +26,29 @@ import androidx.compose.ui.unit.dp
 fun CustomTopAppBar(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
-    topAppBarForSection : String?
+    topAppBarForSection: String?
 ) {
     val sectionData = SectionData()
     TopAppBar(
         modifier = modifier.padding(top = 20.dp),
         navigationIcon = {
 
-            when(topAppBarForSection){
+            when (topAppBarForSection) {
                 sectionData.registration -> {
                     OutlinedButton(
                         onClick = {
                             onClick()
                         },
-                        modifier = Modifier.padding( 18.dp).size(55.dp),  //avoid the oval shape
+                        modifier = Modifier
+                            .padding(18.dp)
+                            .size(55.dp),  //avoid the oval shape
                         shape = CircleShape,
                         border = BorderStroke(1.dp, Color(0xFFEBEAEC)),
                         contentPadding = PaddingValues(0.dp),  //avoid the little icon
-                        colors = ButtonDefaults.outlinedButtonColors(containerColor = Color.White,contentColor = Color(0xFF3F414E))
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            containerColor = Color.White,
+                            contentColor = Color(0xFF3F414E)
+                        )
                     ) {
                         Icon(
                             modifier = modifier.size(25.dp),
@@ -51,12 +57,13 @@ fun CustomTopAppBar(
                         )
                     }
                 }
-                sectionData.dashboard -> {
+//                Dashboard
+                sectionData.dashboard.homeScreen -> {
                     OutlinedButton(
                         onClick = {
                             onClick()
                         },
-                        modifier = Modifier.size(55.dp),  //avoid the oval shape
+                        modifier = Modifier.size(43.dp),  //avoid the oval shape
                         shape = RoundedCornerShape(20.dp),
                         border = BorderStroke(color = Color.Transparent, width = 0.dp),
                         contentPadding = PaddingValues(0.dp),  //avoid the little icon
@@ -69,8 +76,35 @@ fun CustomTopAppBar(
                         )
                     }
                 }
-            }
 
+                sectionData.dashboard.detailHabit -> {
+                    Box(
+                        modifier = modifier.padding(start = 20.dp)
+                    ) {
+                        OutlinedButton(
+                            onClick = {
+                                onClick()
+                            },
+                            modifier = Modifier.size(32.dp),  //avoid the oval shape
+                            shape = RoundedCornerShape(10.dp),
+                            border = BorderStroke(color = Color.Transparent, width = 0.dp),
+                            contentPadding = PaddingValues(0.dp),  //avoid the little icon
+                            colors = ButtonDefaults.outlinedButtonColors(
+                                containerColor = Color(
+                                    0xFFF7F8F8
+                                ), contentColor = Color(0xFF1D1617)
+                            )
+                        ) {
+                            Icon(
+                                modifier = modifier.size(18.dp),
+                                painter = painterResource(id = R.drawable.arrow_left),
+                                contentDescription = "tombol kembali"
+                            )
+                        }
+                    }
+                }
+            }
+//          End Dashboard
         },
         title = {
 

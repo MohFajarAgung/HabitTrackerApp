@@ -29,8 +29,8 @@ fun CustomHabitsGrid(
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
-        verticalArrangement = Arrangement.spacedBy(20.dp),
-        horizontalArrangement = Arrangement.spacedBy(20.dp)
+        verticalArrangement = Arrangement.spacedBy(15.dp),
+        horizontalArrangement = Arrangement.spacedBy(15.dp)
     ) {
         items(habits.data!!) { data ->
             HabitBox(data = data)
@@ -67,7 +67,7 @@ fun HabitBox(
                 }
                 val sweepAngle = (data.finish!!.toFloat() / 100) * 360f
 
-//             Ketika data.finish dan jika bernilai >= 40 maka tambah nilai sweepAngleBlue
+//             Ketika data.finish berubah dan jika bernilai >= 40 maka tambah nilai sweepAngleBlue
                 LaunchedEffect(data.finish) {
                     var add = 50
                     if (data.finish >= 40) {
@@ -86,11 +86,11 @@ fun HabitBox(
 
                     // Draw the arc
                     drawArc(
-                        color = Color(0xFF4D57C8),
+                        color = Color(0xFF9AA2FD),
                         startAngle = -90f, // Start at the top
                         sweepAngle = 360f,
                         useCenter = false, // Don't draw a line to the center
-                        style = Stroke(width = 8f)
+                        style = Stroke(width = 15f)
                     )
                     drawArc(
                         color = Color(0xFF53B4FD),
