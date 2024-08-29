@@ -5,6 +5,7 @@ import android.habittracker.ui.screen.SectionData
 import android.habittracker.ui.screen.dashboard.component.ActivityProgress
 import android.habittracker.ui.screen.dashboard.component.CustomDateScroller
 import android.habittracker.ui.screen.dashboard.component.CustomHabitsGrid
+import android.habittracker.ui.screen.dashboard.component.CustomLatestActivityList
 import android.habittracker.ui.screen.dashboard.component.CustomTodayTargetGrid
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -51,6 +52,8 @@ fun HabitDetail(
         ) {
           CustomTodayTargetGrid(dashBoardViewModel = dashBoardViewModel)
             ActivityProgress(dashBoardViewModel =  dashBoardViewModel)
+            
+            CustomLatestActivityList(dashBoardViewModel = dashBoardViewModel)
         }
     }
 

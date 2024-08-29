@@ -5,6 +5,8 @@ import android.habittracker.model.firebase.data.ActivityProgressData
 import android.habittracker.model.firebase.data.ActivityProgressList
 import android.habittracker.model.firebase.data.HabitDataList
 import android.habittracker.model.firebase.data.HabitsData
+import android.habittracker.model.firebase.data.LatestActivityData
+import android.habittracker.model.firebase.data.LatestActivityList
 import android.habittracker.model.firebase.data.TodayTargetData
 import android.habittracker.model.firebase.data.TodayTargetList
 import androidx.compose.ui.res.painterResource
@@ -26,10 +28,14 @@ class DashBoardViewModel : ViewModel() {
     private val _activityProgress = MutableStateFlow(ActivityProgressList())
     val activityProgress = _activityProgress.asStateFlow()
 
+    private val _latestActivityList = MutableStateFlow(LatestActivityList())
+    val latestActivityList = _latestActivityList.asStateFlow()
+
     init {
         setHabitsData()
         setTodayTargets()
         setActivityProgress()
+        setLatestActivity()
     }
     private fun setHabitsData(){
         viewModelScope.launch {
@@ -113,6 +119,34 @@ class DashBoardViewModel : ViewModel() {
                     day = "Saturday",
                     progress = 70,
                 )
+            ))
+        }
+    }
+
+    private fun setLatestActivity(){
+        viewModelScope.launch {
+            _latestActivityList.value = LatestActivityList(listOf(
+                LatestActivityData(
+                    title = "Drinking 300ml Water",
+                    timeAgo = "About 3 minutes ago",
+                    image = R.drawable.drinking_water_icon
+                ),
+                LatestActivityData(
+                    title = "Eat Snack (Fitbar)",
+                    timeAgo = "About 10 minutes ago",
+                    image = R.drawable.drinking_water_icon
+                ),
+                LatestActivityData(
+                    title = "Eat Snack (Fitbar)",
+                    timeAgo = "About 10 minutes ago",
+                    image = R.drawable.drinking_water_icon
+                ),
+                LatestActivityData(
+                    title = "Eat Snack (Fitbar)",
+                    timeAgo = "About 10 minutes ago",
+                    image = R.drawable.drinking_water_icon
+                )
+
             ))
         }
     }

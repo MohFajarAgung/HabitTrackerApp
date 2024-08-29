@@ -25,16 +25,19 @@ fun CustomHabitsGrid(
     dashBoardViewModel: DashBoardViewModel
 ) {
     val habits by dashBoardViewModel.habitList.collectAsState()
+    val latestActivity by dashBoardViewModel.latestActivityList.collectAsState()
 
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
+        modifier = Modifier.height(500.dp),
         verticalArrangement = Arrangement.spacedBy(15.dp),
         horizontalArrangement = Arrangement.spacedBy(15.dp)
     ) {
         items(habits.data!!) { data ->
             HabitBox(data = data)
         }
+
     }
 
 

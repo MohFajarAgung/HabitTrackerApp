@@ -42,7 +42,7 @@ fun AppNavigation(
     val state by authViewModel.state.collectAsState()
 
 
-    NavHost(navController = navHostController, startDestination = "detailHabitScreen") {
+    NavHost(navController = navHostController, startDestination = "homeScreen") {
 
 
 //     Registration_section

@@ -4,13 +4,20 @@ import android.habittracker.ui.component.CustomTopAppBar
 import android.habittracker.ui.screen.SectionData
 import android.habittracker.ui.screen.dashboard.component.CustomDateScroller
 import android.habittracker.ui.screen.dashboard.component.CustomHabitsGrid
+import android.habittracker.ui.screen.dashboard.component.CustomLatestActivityList
+import android.habittracker.ui.screen.dashboard.component.LatestActivityBox
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
@@ -40,12 +47,16 @@ fun HomeScreen(
         )
     }
 
+
     Column(
         modifier = modifier
             .fillMaxSize()
             .background(Color(0xFF4D57C8))
     ) {
-        CustomTopAppBar(onClick = { /*TODO*/ }, topAppBarForSection = SectionData().dashboard.homeScreen)
+        CustomTopAppBar(
+            onClick = { /*TODO*/ },
+            topAppBarForSection = SectionData().dashboard.homeScreen
+        )
         Column(
             modifier = modifier
                 .fillMaxSize()
@@ -62,7 +73,17 @@ fun HomeScreen(
             Spacer(modifier = modifier.height(20.dp))
             CustomDateScroller()
             Spacer(modifier = modifier.height(40.dp))
-            CustomHabitsGrid(dashBoardViewModel = dashBoardViewModel)
+
+            LazyColumn() {
+
+                item {
+                    CustomHabitsGrid(dashBoardViewModel = dashBoardViewModel)
+                    CustomLatestActivityList(dashBoardViewModel = dashBoardViewModel)
+
+                }
+            }
+
+
         }
     }
 }
