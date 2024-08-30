@@ -42,7 +42,7 @@ fun AppNavigation(
     val state by authViewModel.state.collectAsState()
 
 
-    NavHost(navController = navHostController, startDestination = "homeScreen") {
+    NavHost(navController = navHostController, startDestination = "welcomeScreen") {
 
 
 //     Registration_section
@@ -63,7 +63,7 @@ fun AppNavigation(
             LaunchedEffect(key1 = Unit) {
                 authViewModel.checkSignInStatus()
             }
-            WelcomeScreen(navController = navHostController)
+            WelcomeScreen(navController = navHostController, authViewModel = authViewModel)
         }
         composable("signInScreen") {
             SignInScreen(

@@ -6,6 +6,8 @@ import android.content.IntentSender
 import android.habittracker.model.firebase.auth.FirebaseAuthClient
 import android.habittracker.model.firebase.auth.AuthResult
 import android.habittracker.model.firebase.auth.SignInState
+import android.habittracker.model.firebase.dbs_realtime.FirebaseDatabaseRealtimeClient
+import android.habittracker.model.firebase.dbs_realtime.TestData
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -16,7 +18,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class AuthViewModel(
-    private val firebaseAuthClient: FirebaseAuthClient
+    private val firebaseAuthClient: FirebaseAuthClient,
+    private val firebaseDatabaseRealtimeClient: FirebaseDatabaseRealtimeClient
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(SignInState())
@@ -24,6 +27,7 @@ class AuthViewModel(
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading = _isLoading.asStateFlow()
+
 
     private fun onSignInResult(result: AuthResult) {
         _state.update {
@@ -65,10 +69,10 @@ class AuthViewModel(
     }
 
 //    SignUp dengan menggunakan email dan password
-    fun signUpWithEmailAndPassword(navController: NavController,context: Context,email: String, password: String){
+    fun signUpWithEmailAndPassword(navController: NavController,context: Context,username : String, email: String, password: String){
        _isLoading.value = true
         viewModelScope.launch {
-            val result = firebaseAuthClient.signUpWithEmailAndPassword(email, password)
+            val result = firebaseAuthClient.signUpWithEmailAndPassword(username, email, password)
            if(result.errorMessage == null){
                _isLoading.value = false
                Toast.makeText(context, "Create Account Successfull", Toast.LENGTH_SHORT).show()
@@ -127,6 +131,7 @@ class AuthViewModel(
             }
         }
     }
+
 
 
 }

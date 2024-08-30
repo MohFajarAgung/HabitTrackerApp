@@ -10,6 +10,7 @@ import com.google.android.gms.auth.api.identity.BeginSignInRequest.GoogleIdToken
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.tasks.await
 import java.util.concurrent.CancellationException
@@ -20,6 +21,7 @@ class FirebaseAuthClient(
 ) {
 
     private val auth = Firebase.auth
+    private val database = Firebase.database.reference
 
     //    SignIn menggunakan akun facebook
 //    suspend fun signInWithFacebook(): IntentSender? {
@@ -125,10 +127,21 @@ class FirebaseAuthClient(
     }
 
     //    SignUp dengan menggunakan email dan password
-    suspend fun signUpWithEmailAndPassword(email: String, password: String): AuthResult {
+    suspend fun signUpWithEmailAndPassword(username: String,email: String, password: String): AuthResult {
         return try {
-            auth.createUserWithEmailAndPassword(email, password).await()
-            auth.signOut()
+            val result = auth.createUserWithEmailAndPassword(email, password).await().user
+
+            result?.run{
+                val userData = mapOf(
+                    "email" to email,
+                    "username" to username
+                )
+                database.child("users").child(uid).setValue(userData)
+                    .addOnSuccessListener {
+                        auth.signOut()
+                    }
+            }
+
             AuthResult(
                 data = null,
                 errorMessage = null,

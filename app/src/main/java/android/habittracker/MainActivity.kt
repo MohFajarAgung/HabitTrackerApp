@@ -1,6 +1,7 @@
 package android.habittracker
 
 import android.habittracker.model.firebase.auth.FirebaseAuthClient
+import android.habittracker.model.firebase.dbs_realtime.FirebaseDatabaseRealtimeClient
 import android.habittracker.ui.screen.AppNavigation
 import android.habittracker.ui.screen.ViewModelFactory
 import android.habittracker.ui.screen.dashboard.DashBoardViewModel
@@ -27,6 +28,9 @@ class MainActivity : ComponentActivity() {
             onTapClient = Identity.getSignInClient(applicationContext)
         )
     }
+    private val firebaseDatabaseRealtimeClient by lazy{
+        FirebaseDatabaseRealtimeClient()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,8 +45,8 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val navController = rememberNavController()
-                    val authViewModel : AuthViewModel = viewModel(factory = ViewModelFactory(firebaseAuthClient) )
-                    val dashBoardViewModel : DashBoardViewModel = viewModel(factory = ViewModelFactory(firebaseAuthClient))
+                    val authViewModel : AuthViewModel = viewModel(factory = ViewModelFactory(firebaseAuthClient, firebaseDatabaseRealtimeClient ) )
+                    val dashBoardViewModel : DashBoardViewModel = viewModel(factory = ViewModelFactory(firebaseAuthClient, firebaseDatabaseRealtimeClient))
                     AppNavigation(
                         navHostController = navController,
                         authViewModel = authViewModel,

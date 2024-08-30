@@ -68,14 +68,14 @@ fun HabitBox(
                 val sweepAngleBlue = remember {
                     mutableStateOf(100f)
                 }
-                val sweepAngle = (data.finish!!.toFloat() / 100) * 360f
+                val sweepAngle = (data.progress!!.toFloat() / 100) * 360f
 
 //             Ketika data.finish berubah dan jika bernilai >= 40 maka tambah nilai sweepAngleBlue
-                LaunchedEffect(data.finish) {
+                LaunchedEffect(data.progress) {
                     var add = 50
-                    if (data.finish >= 40) {
+                    if (data.progress >= 40) {
                         for (i in 40..100 step 10) {
-                            if (data.finish in i..i + 10) {
+                            if (data.progress in i..i + 10) {
                                 sweepAngleBlue.value += add
                                 break
                             }
@@ -129,7 +129,7 @@ fun HabitBox(
                 )
             )
             Text(
-                text = data.finish!!.toString() + "%",
+                text = data.progress!!.toString() + "%",
                 style = TextStyle(
                     fontSize = 20.sp,
                     color = Color(0xFF4D57C8),

@@ -9,10 +9,8 @@ import android.habittracker.model.firebase.data.LatestActivityData
 import android.habittracker.model.firebase.data.LatestActivityList
 import android.habittracker.model.firebase.data.TodayTargetData
 import android.habittracker.model.firebase.data.TodayTargetList
-import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -43,27 +41,27 @@ class DashBoardViewModel : ViewModel() {
                 HabitsData(
                     habitId = "1",
                     habit = "Drinking Water",
-                    finish = 25,
+                    progress = 25,
                     icon = R.drawable.drinking_water_icon
                 ),
                 HabitsData(
                     habitId = "2",
                     habit = "Cycling",
-                    finish = 50,
+                    progress = 50,
                     icon = R.drawable.cycling_icon
 
                 ),
                 HabitsData(
                     habitId = "3",
                     habit = "Water",
-                    finish = 75,
+                    progress = 75,
                     icon = R.drawable.water_icon
 
                 ),
                 HabitsData(
                     habitId = "4",
                     habit = "Walking",
-                    finish = 100,
+                    progress = 100,
                     icon = R.drawable.walking_icon
 
                 ),

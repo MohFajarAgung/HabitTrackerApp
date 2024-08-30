@@ -117,6 +117,7 @@ fun LoginOrSignUpWithEmail(
                         authViewModel.signUpWithEmailAndPassword(
                             navController = navController,
                             context = context,
+                            username = textUsername.value,
                             email = textEmail.value,
                             password = textPassword.value
                         )
