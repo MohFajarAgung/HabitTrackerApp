@@ -24,10 +24,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 
 @Composable
 fun CustomHabitsGrid(
-    dashBoardViewModel: DashBoardViewModel
+    dashBoardViewModel: DashBoardViewModel,
+    showAllHabits: Boolean = false,
+    navController: NavController
 ) {
     val habits by dashBoardViewModel.habitList.collectAsState()
     val latestActivity by dashBoardViewModel.latestActivityList.collectAsState()
@@ -38,24 +41,40 @@ fun CustomHabitsGrid(
         if (it.size <= 2) {
             height = 250
         }
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
-            modifier = Modifier.height(height.dp),
-            verticalArrangement = Arrangement.spacedBy(15.dp),
-            horizontalArrangement = Arrangement.spacedBy(15.dp)
-        ) {
-            itemsIndexed(it) { index, data ->
+
+        if (showAllHabits) {
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                verticalArrangement = Arrangement.spacedBy(15.dp),
+                horizontalArrangement = Arrangement.spacedBy(15.dp)
+            ) {
+                items(it) { data ->
+                    AllHabitsBox(data = data)
+                }
+
+            }
+        }else{
+
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                modifier = Modifier.height(height.dp),
+                verticalArrangement = Arrangement.spacedBy(15.dp),
+                horizontalArrangement = Arrangement.spacedBy(15.dp)
+            ) {
+                itemsIndexed(it) { index, data ->
+//                Jika showAllHabits == true maka tampilkan semua habit
 //                tampilkan cukup sampai 4 grid saja
-                if (index < 4) {
+                    if (index < 4) {
 //                    munculkan tombol pada grid terakhir jika habits lebih dari 4
-                    if (index == 3 && it.size > 4) {
-                        HabitBox(data = data, buttonAppear = true)
-                    } else {
-                        HabitBox(data = data)
+                        if (index == 3 && it.size > 4) {
+                            HabitBox(data = data, buttonAppear = true, navController = navController)
+                        } else {
+                            HabitBox(data = data, navController = navController)
+                        }
                     }
                 }
-            }
 
+            }
         }
 
     }
@@ -63,11 +82,13 @@ fun CustomHabitsGrid(
 
 }
 
+
 @Composable
 fun HabitBox(
     modifier: Modifier = Modifier,
     data: HabitsData,
-    buttonAppear: Boolean = false
+    buttonAppear: Boolean = false,
+    navController: NavController
 ) {
 
     Box(
@@ -92,7 +113,7 @@ fun HabitBox(
                 }
                 val sweepAngle = (data.progress!!.toFloat() / 100) * 360f
 
-//             Ketika data.finish berubah dan jika bernilai >= 40 maka tambah nilai sweepAngleBlue
+//             Ketika data.progress berubah dan jika bernilai >= 40 maka tambah nilai sweepAngleBlue
                 LaunchedEffect(data.progress) {
                     var add = 50
                     if (data.progress >= 40) {
@@ -175,6 +196,7 @@ fun HabitBox(
 
             OutlinedButton(
                 onClick = {
+                          navController.navigate("allHabitsScreen")
                 },
                 modifier = Modifier
                     .padding(end = 5.dp)
@@ -197,3 +219,73 @@ fun HabitBox(
     }
 
 }
+
+@Composable
+fun AllHabitsBox(
+    modifier: Modifier = Modifier,
+    data: HabitsData
+) {
+    Box(
+        modifier = modifier
+            .clip(RoundedCornerShape(15.dp))
+            .background(Color.White)
+            .clickable { }
+    ) {
+        Column(
+            modifier = modifier
+                .padding(10.dp)
+                .fillMaxWidth(),
+        ) {
+            Box(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 30.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Canvas(
+                    modifier = Modifier.size(100.dp)
+                ) {
+                    // Draw the arc
+                    drawArc(
+                        color = Color(0xFF9AA2FD),
+                        startAngle = -90f, // Start at the top
+                        sweepAngle = 360f,
+                        useCenter = false, // Don't draw a line to the center
+                        style = Stroke(width = 15f)
+                    )
+                }
+                Image(
+                    modifier = modifier.size(40.dp),
+                    painter = painterResource(id = data.icon!!),
+                    contentDescription = "Habit Icon"
+                )
+            }
+            Text(
+                text = data.name!!,
+                style = TextStyle(
+                    fontSize = 20.sp,
+                    color = Color(0xFF4D57C8),
+                    shadow = Shadow(
+                        color = Color(0xFF000000).copy(alpha = 0.25f),
+                        offset = Offset(0f, 4f),
+                        blurRadius = 4f
+                    )
+                )
+            )
+            Text(
+                text = data.progress!!.toString() + "%",
+                style = TextStyle(
+                    fontSize = 20.sp,
+                    color = Color(0xFF4D57C8),
+                    shadow = Shadow(
+                        color = Color(0xFF000000).copy(alpha = 0.25f),
+                        offset = Offset(0f, 4f),
+                        blurRadius = 4f
+                    )
+                )
+            )
+        }
+    }
+}
+
+

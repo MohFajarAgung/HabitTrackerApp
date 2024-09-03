@@ -5,6 +5,7 @@ import android.habittracker.ui.screen.SectionData
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -13,13 +14,18 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -76,6 +82,24 @@ fun CustomTopAppBar(
                         )
                     }
                 }
+                sectionData.dashboard.allHabitsScreen -> {
+                    OutlinedButton(
+                        onClick = {
+                            onClick()
+                        },
+                        modifier = Modifier.size(43.dp),  //avoid the oval shape
+                        shape = RoundedCornerShape(20.dp),
+                        border = BorderStroke(color = Color.Transparent, width = 0.dp),
+                        contentPadding = PaddingValues(0.dp),  //avoid the little icon
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = Color(0xFFFFFDFB))
+                    ) {
+                        Icon(
+                            modifier = modifier.size(38.dp),
+                            painter = painterResource(id = R.drawable.list_menu),
+                            contentDescription = "tombol list menu"
+                        )
+                    }
+                }
 
                 sectionData.dashboard.detailHabit -> {
                     Box(
@@ -107,7 +131,20 @@ fun CustomTopAppBar(
 //          End Dashboard
         },
         title = {
-
+            when(topAppBarForSection){
+                sectionData.dashboard.allHabitsScreen ->{
+                    Text(
+                        modifier = modifier.fillMaxWidth().padding(end = 40.dp),
+                        textAlign = TextAlign.Center,
+                        text = "All Habits",
+                        style = TextStyle(
+                            color = Color.White,
+                            fontWeight = FontWeight.Medium,
+                            fontSize = 24.sp
+                        )
+                    )
+                }
+            }
         },
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = Color.Transparent

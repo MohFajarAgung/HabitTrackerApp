@@ -7,5 +7,6 @@ data class SectionData(
 
 data class DashBoardScreenData(
     val homeScreen : String = "homeScreen",
+    val allHabitsScreen : String = "allHabitsScreen",
     val detailHabit : String = "detailHabitScreen"
 )

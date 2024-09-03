@@ -1,13 +1,11 @@
 package android.habittracker.ui.screen.dashboard
 
-import android.habittracker.model.firebase.auth.SignInState
 import android.habittracker.ui.component.CustomTopAppBar
 import android.habittracker.ui.screen.SectionData
 import android.habittracker.ui.screen.dashboard.component.CustomDateScroller
 import android.habittracker.ui.screen.dashboard.component.CustomHabitsGrid
 import android.habittracker.ui.screen.dashboard.component.CustomLatestActivityList
 import android.habittracker.ui.screen.dashboard.component.CustomModalDrawer
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -17,11 +15,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -33,14 +29,11 @@ import androidx.navigation.NavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.launch
 
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(
+fun AllHabitsScreen(
     modifier: Modifier = Modifier,
-    navController: NavController,
     dashBoardViewModel: DashBoardViewModel,
-    signInState: SignInState,
+    navController: NavController
 ) {
     val systemUiController = rememberSystemUiController()
 
@@ -54,16 +47,14 @@ fun HomeScreen(
     CustomModalDrawer(
         drawerState = drawerState,
         content = {
-            HomeScreenContent(dashBoardViewModel = dashBoardViewModel, drawerState = drawerState, navController = navController)
+            AllHabitsContent(dashBoardViewModel = dashBoardViewModel, drawerState = drawerState, navController = navController )
         }
 
     )
-
-
 }
 
 @Composable
-fun HomeScreenContent(
+fun AllHabitsContent(
     modifier: Modifier = Modifier,
     dashBoardViewModel: DashBoardViewModel,
     drawerState: DrawerState,
@@ -77,35 +68,20 @@ fun HomeScreenContent(
     ) {
         CustomTopAppBar(
             onClick = { scope.launch { drawerState.open() } },
-            topAppBarForSection = SectionData().dashboard.homeScreen
+            topAppBarForSection = SectionData().dashboard.allHabitsScreen
         )
         Column(
             modifier = modifier
                 .fillMaxSize()
-                .padding(15.dp)
+                .padding( horizontal = 15.dp)
         ) {
-            Text(
-                text = "TODAY",
-                style = TextStyle(
-                    fontSize = 24.sp,
-                    color = Color.White,
+            Spacer(modifier = modifier.height(30.dp))
 
-                    )
-            )
-            Spacer(modifier = modifier.height(20.dp))
-            CustomDateScroller()
-            Spacer(modifier = modifier.height(40.dp))
-
-            LazyColumn() {
-
-                item {
-                    CustomHabitsGrid(dashBoardViewModel = dashBoardViewModel, navController = navController)
-                    CustomLatestActivityList(dashBoardViewModel = dashBoardViewModel)
-
-                }
-            }
+            CustomHabitsGrid(dashBoardViewModel = dashBoardViewModel, showAllHabits = true, navController = navController )
 
 
         }
     }
 }
+
+

@@ -1,5 +1,6 @@
 package android.habittracker.ui.screen
 
+import android.habittracker.ui.screen.dashboard.AllHabitsScreen
 import android.habittracker.ui.screen.dashboard.DashBoardViewModel
 import android.habittracker.ui.screen.dashboard.DashboardScreen
 import android.habittracker.ui.screen.dashboard.HabitDetail
@@ -82,6 +83,10 @@ fun AppNavigation(
 
         composable("homeScreen") {
             HomeScreen(navController = navHostController, dashBoardViewModel = dashBoardViewModel, signInState = state)
+        }
+
+        composable("allHabitsScreen"){
+            AllHabitsScreen(dashBoardViewModel = dashBoardViewModel, navController = navHostController)
         }
 
         composable("detailHabitScreen") {
