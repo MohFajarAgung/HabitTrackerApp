@@ -1,12 +1,13 @@
 package android.habittracker.model.firebase.data
 
 data class HabitDataList(
-    val data: List<HabitsData>? = null,
+    val habits: List<HabitsData>? = null,
 )
 
-data class HabitsData(
-    val habitId : String?,
-    val habit : String?,
-    val progress : Int?,
-    val icon : Int?,
+data class HabitsData (
+    val habitId: String? = null,
+    val icon: Int? = null,
+    val name: String? = null,
+    val progress: Int? = null,
 )
+

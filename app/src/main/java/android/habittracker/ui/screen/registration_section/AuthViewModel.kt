@@ -7,7 +7,6 @@ import android.habittracker.model.firebase.auth.FirebaseAuthClient
 import android.habittracker.model.firebase.auth.AuthResult
 import android.habittracker.model.firebase.auth.SignInState
 import android.habittracker.model.firebase.dbs_realtime.FirebaseDatabaseRealtimeClient
-import android.habittracker.model.firebase.dbs_realtime.TestData
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

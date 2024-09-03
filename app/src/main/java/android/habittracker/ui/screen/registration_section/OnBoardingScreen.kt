@@ -96,7 +96,7 @@ fun OnBoardingScreen(
                    pagerState.animateScrollToPage(pagerState.currentPage + 1)
                 }else{
 //                    ke DashBoardScreen
-                    navController.navigate("dashBoardScreen"){
+                    navController.navigate("homeScreen"){
                        popUpTo("onBoardingScreen"){
                            inclusive = true
                        }

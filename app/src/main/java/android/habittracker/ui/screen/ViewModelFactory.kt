@@ -16,7 +16,7 @@ class ViewModelFactory(
             return AuthViewModel(firebaseAuthClient, firebaseDatabaseRealtimeClient) as T
         }
         if(modelClass.isAssignableFrom(DashBoardViewModel::class.java)){
-            return DashBoardViewModel() as T
+            return DashBoardViewModel(firebaseAuthClient,firebaseDatabaseRealtimeClient) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

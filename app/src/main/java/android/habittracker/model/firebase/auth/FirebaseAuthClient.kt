@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
 import android.habittracker.R
+import android.habittracker.model.firebase.dbs_realtime.FirebaseDatabaseRealtimeClient
 import android.service.credentials.BeginCreateCredentialRequest
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.BeginSignInRequest.GoogleIdTokenRequestOptions
@@ -21,27 +22,7 @@ class FirebaseAuthClient(
 ) {
 
     private val auth = Firebase.auth
-    private val database = Firebase.database.reference
-
-    //    SignIn menggunakan akun facebook
-//    suspend fun signInWithFacebook(): IntentSender? {
-//        val result = try {
-//            onTapClient.beginSignIn(
-//                buildSignInFacebookRequest()
-//            ).await()
-//
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//            if (e is CancellationException) throw e
-//            null
-//        }
-//        return result?.pendingIntent?.intentSender
-//    }
-//
-//    private fun buildSignInFacebookRequest(): BeginSignInRequest {
-//        return  BeginSignInRequest.Builder()
-//    }
-
+    private val databaseClient = FirebaseDatabaseRealtimeClient()
 
     //    SignIn menggunakan akun google
     suspend fun signInWithGoogle(): IntentSender? {
@@ -127,19 +108,25 @@ class FirebaseAuthClient(
     }
 
     //    SignUp dengan menggunakan email dan password
-    suspend fun signUpWithEmailAndPassword(username: String,email: String, password: String): AuthResult {
+    suspend fun signUpWithEmailAndPassword(
+        username: String,
+        email: String,
+        password: String
+    ): AuthResult {
         return try {
             val result = auth.createUserWithEmailAndPassword(email, password).await().user
 
-            result?.run{
-                val userData = mapOf(
-                    "email" to email,
-                    "username" to username
-                )
-                database.child("users").child(uid).setValue(userData)
-                    .addOnSuccessListener {
+            result?.run {
+//                menambahkan data user ke dalam Firebase Database Realtime
+                databaseClient.createDataForNewAccount(uid, username, email) {
+                    if (it == "Berhasil") {
                         auth.signOut()
+                    } else {
+//                        Jika gagal menambahkan data pada database maka hapus akun yang baru dibuat
+                        delete()
                     }
+                }
+
             }
 
             AuthResult(
@@ -159,7 +146,7 @@ class FirebaseAuthClient(
 
 
     suspend fun signOut(): AuthResult {
-        return  try {
+        return try {
             onTapClient.signOut().await()
             auth.signOut()
             AuthResult(data = null, errorMessage = null)

@@ -45,7 +45,7 @@ fun CustomLatestActivityList(
     ) {
         Row(
             modifier = modifier
-                .padding(vertical = 20.dp)
+                .padding(top = 10.dp , bottom = 20.dp)
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
@@ -60,7 +60,9 @@ fun CustomLatestActivityList(
             )
             Text(
                 "See more",
-                modifier = modifier.clickable {
+                modifier = modifier
+                    .padding(end = 15.dp)
+                    .clickable {
 
                 },
                 style = TextStyle(
