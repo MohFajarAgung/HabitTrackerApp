@@ -48,7 +48,8 @@ fun ActivityProgress(
     ) {
         Column {
             Row(
-                modifier = modifier.fillMaxWidth()
+                modifier = modifier
+                    .fillMaxWidth()
                     .padding(vertical = 20.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
@@ -97,43 +98,47 @@ fun ActivityProgress(
                     .background(Color.White)
                     .padding(15.dp),
             ) {
-                for(i in 0..6){
-                    Column(
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(12.dp),  // Padding di sekitar Column jika diperlukan
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                                val height = (activityProgress.data!![i].progress!!.toFloat()/ 100f) * 150f
-                        Row(
-                            modifier.height(150.dp),
-                            verticalAlignment = Alignment.Bottom
+                activityProgress.data?.let {
+
+                    for (i in 0..it.size - 1) {
+                        Column(
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(12.dp),  // Padding di sekitar Column jika diperlukan
+                            horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(height.toInt().dp)
-                                    .clip(RoundedCornerShape(8.dp))
-                                    .background(
-                                        brush = Brush.linearGradient(
-                                            colors = listOf(
-                                                Color(0xFF72FFBB), // Start color
-                                                Color(0xFF3CFE38)  // End color
+                            val height =
+                                (activityProgress.data!![i].progress!!.toFloat() / 100f) * 150f
+                            Row(
+                                modifier.height(150.dp),
+                                verticalAlignment = Alignment.Bottom
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(height.toInt().dp)
+                                        .clip(RoundedCornerShape(8.dp))
+                                        .background(
+                                            brush = Brush.linearGradient(
+                                                colors = listOf(
+                                                    Color(0xFF72FFBB), // Start color
+                                                    Color(0xFF3CFE38)  // End color
+                                                )
                                             )
                                         )
-                                    )
-                            )
+                                )
 
-                        }
-                        Spacer(modifier = modifier.height(10.dp))
-                        Text(
-                            text = activityProgress.data!![i].day!!.take(3),
-                            maxLines = 1,
-                            style = TextStyle(
-                                fontSize = 12.sp,
-                                color = Color.Black,
+                            }
+                            Spacer(modifier = modifier.height(10.dp))
+                            Text(
+                                text = activityProgress.data!![i].day!!.take(3),
+                                maxLines = 1,
+                                style = TextStyle(
+                                    fontSize = 12.sp,
+                                    color = Color.Black,
+                                )
                             )
-                        )
+                        }
                     }
                 }
             }

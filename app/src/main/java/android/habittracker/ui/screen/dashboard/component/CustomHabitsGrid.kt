@@ -3,7 +3,9 @@ package android.habittracker.ui.screen.dashboard.component
 import android.habittracker.R
 import android.habittracker.model.firebase.data.HabitsData
 import android.habittracker.ui.screen.dashboard.DashBoardViewModel
+import android.os.Build
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.*
@@ -28,13 +30,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun CustomHabitsGrid(
     dashBoardViewModel: DashBoardViewModel,
     showAllHabits: Boolean = false,
     navController: NavController
 ) {
-    val habits by dashBoardViewModel.habitList.collectAsState()
+    val habits by dashBoardViewModel.todayHabitList.collectAsState()
 
     habits.habits?.let {
         val height = remember {

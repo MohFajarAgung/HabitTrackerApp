@@ -3,32 +3,41 @@ package android.habittracker.ui.screen.dashboard
 import android.habittracker.R
 import android.habittracker.model.firebase.auth.FirebaseAuthClient
 import android.habittracker.model.firebase.auth.SignInState
-import android.habittracker.model.firebase.auth.UserData
 import android.habittracker.model.firebase.data.ActivityProgressData
 import android.habittracker.model.firebase.data.ActivityProgressList
-import android.habittracker.model.firebase.data.HabitDataList
+import android.habittracker.model.firebase.data.AllHabitDataList
+import android.habittracker.model.firebase.data.TodayHabitDataList
 import android.habittracker.model.firebase.data.HabitsData
 import android.habittracker.model.firebase.data.LatestActivityData
 import android.habittracker.model.firebase.data.LatestActivityList
 import android.habittracker.model.firebase.data.TodayTargetData
 import android.habittracker.model.firebase.data.TodayTargetList
 import android.habittracker.model.firebase.dbs_realtime.FirebaseDatabaseRealtimeClient
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
+import androidx.compose.ui.text.capitalize
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.DayOfWeek
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
+@RequiresApi(Build.VERSION_CODES.O)
 class DashBoardViewModel(
     private val firebaseAuthClient: FirebaseAuthClient,
     private val firebaseDatabaseRealtimeClient: FirebaseDatabaseRealtimeClient
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(SignInState())
-    private val _habitList = MutableStateFlow(HabitDataList())
-    val habitList = _habitList.asStateFlow()
+    private val _todayHabitList = MutableStateFlow(TodayHabitDataList())
+    val todayHabitList = _todayHabitList.asStateFlow()
+    private val _allHabitList = MutableStateFlow(AllHabitDataList())
+    val allHabitList = _allHabitList.asStateFlow()
 
     private val _todayTargets = MutableStateFlow(TodayTargetList())
     val todayTargets = _todayTargets.asStateFlow()
@@ -40,27 +49,50 @@ class DashBoardViewModel(
     val latestActivityList = _latestActivityList.asStateFlow()
 
     init {
-        getHabitData()
+        getTodayHabitData()
+        getAllHabitData()
         getTodayTargetData()
-        setHabitsData()
+        setTodayHabitsData()
         setTodayTargets()
 //        setActivityProgress()
         setLatestActivity()
     }
 
-    //    function untuk getHabitData dari Firebase Database Realtime
-    private fun getHabitData() {
+
+    //    function untuk getTodayHabitData dari Firebase Database Realtime
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun getTodayHabitData() {
         viewModelScope.launch {
+            val currentDate = LocalDate.now()
+            val formattedDate = currentDate.format(DateTimeFormatter.ofPattern("dd MMMM yyyy"))
             val result =
-                firebaseDatabaseRealtimeClient.getHabitData(firebaseAuthClient.getSignInUser()?.userId.toString())
-            _habitList.value = result
-            _habitList.value?.let {
-                setActivityProgress(it)
+                firebaseDatabaseRealtimeClient.getTodayHabitData(
+                    firebaseAuthClient.getSignInUser()?.userId.toString(),
+                    formattedDate
+                )
+            _todayHabitList.value = result
+            _todayHabitList.value?.let {
+//                setActivityProgress(it)
             }
         }
 
 
     }
+
+    private fun getAllHabitData() {
+        viewModelScope.launch {
+            val result = firebaseDatabaseRealtimeClient
+                .getAllHabitDate(firebaseAuthClient.getSignInUser()?.userId.toString())
+
+            _allHabitList.value = result
+
+            _allHabitList.value?.let {
+                setActivityProgress(it)
+            }
+
+        }
+    }
+
 
     //    function untuk getTodayTargetData dari Firebase Database Realtime
     private fun getTodayTargetData() {
@@ -71,17 +103,21 @@ class DashBoardViewModel(
         }
     }
 
-    private fun setHabitsData() {
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun setTodayHabitsData() {
         viewModelScope.launch {
-            firebaseDatabaseRealtimeClient.setHabitData(
+            val currentDate = LocalDate.now()
+            val formattedDate = currentDate.format(DateTimeFormatter.ofPattern("dd MMMM yyyy"))
+            firebaseDatabaseRealtimeClient.setTodayHabit(
                 HabitsData(
-                    habitId = "3",
+                    habitId = "2",
                     name = "Water",
                     progress = 100,
-                    icon = R.drawable.water_icon
-
+                    icon = R.drawable.water_icon,
                 ),
-                userId = firebaseAuthClient.getSignInUser()?.userId.toString()
+                userId = firebaseAuthClient.getSignInUser()?.userId.toString(),
+                date = formattedDate
             )
             {
 //                  Handle Result di sini
@@ -153,53 +189,38 @@ class DashBoardViewModel(
         }
     }
 
-    private fun setActivityProgress(habitsList: HabitDataList) {
+    private fun setActivityProgress(allHabitsMap: AllHabitDataList) {
         viewModelScope.launch {
 
+
             var progress = 0
-            habitsList.habits?.let { habits ->
+//
+            allHabitsMap.date?.forEach { date, habits ->
                 var totalPercentage = 0
                 habits.forEach { data ->
                     data.progress?.let {
                         totalPercentage += it
                     }
                 }
-//                progress = semua progress pada masing2 habits dibagi dengan total habits
                 progress = totalPercentage / habits.size
+                Log.d("tanggal", date)
+
+                // Define the formatter according to the date format
+                val formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
+                // Parse the date string into a LocalDate object
+                val dateFormatted = LocalDate.parse(date, formatter)
+                // Get the day of the week
+                val dayOfWeek: String = dateFormatted.dayOfWeek.name.lowercase()
+                    .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
+
+                val updateActivityProgress = _activityProgress.value.data.orEmpty() +
+                        ActivityProgressData(
+                            day = dayOfWeek,
+                            progress = progress,
+                        )
+                _activityProgress.value = ActivityProgressList(updateActivityProgress)
             }
 
-            _activityProgress.value = ActivityProgressList(
-                listOf(
-                    ActivityProgressData(
-                        day = "Sunday",
-                        progress = progress,
-                    ),
-                    ActivityProgressData(
-                        day = "Monday",
-                        progress = 90,
-                    ),
-                    ActivityProgressData(
-                        day = "Tuesday",
-                        progress = 50,
-                    ),
-                    ActivityProgressData(
-                        day = "Wednesday",
-                        progress = 70,
-                    ),
-                    ActivityProgressData(
-                        day = "Thursday",
-                        progress = 100,
-                    ),
-                    ActivityProgressData(
-                        day = "Friday",
-                        progress = 30,
-                    ),
-                    ActivityProgressData(
-                        day = "Saturday",
-                        progress = 70,
-                    )
-                )
-            )
         }
     }
 
