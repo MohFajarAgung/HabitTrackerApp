@@ -13,6 +13,7 @@ import android.habittracker.model.firebase.data.LatestActivityList
 import android.habittracker.model.firebase.data.TodayTargetData
 import android.habittracker.model.firebase.data.TodayTargetList
 import android.habittracker.model.firebase.dbs_realtime.FirebaseDatabaseRealtimeClient
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -43,42 +44,48 @@ class DashBoardViewModel(
         getTodayTargetData()
         setHabitsData()
         setTodayTargets()
-        setActivityProgress()
+//        setActivityProgress()
         setLatestActivity()
     }
 
-//    function untuk getHabitData dari Firebase Database Realtime
+    //    function untuk getHabitData dari Firebase Database Realtime
     private fun getHabitData() {
         viewModelScope.launch {
-                val result = firebaseDatabaseRealtimeClient.getHabitData(firebaseAuthClient.getSignInUser()?.userId.toString())
-                _habitList.value = result
+            val result =
+                firebaseDatabaseRealtimeClient.getHabitData(firebaseAuthClient.getSignInUser()?.userId.toString())
+            _habitList.value = result
+            _habitList.value?.let {
+                setActivityProgress(it)
             }
+        }
 
 
     }
-//    function untuk getTodayTargetData dari Firebase Database Realtime
-    private fun getTodayTargetData(){
-        viewModelScope.launch{
-            val result = firebaseDatabaseRealtimeClient.getTodayTarget(firebaseAuthClient.getSignInUser()?.userId.toString())
+
+    //    function untuk getTodayTargetData dari Firebase Database Realtime
+    private fun getTodayTargetData() {
+        viewModelScope.launch {
+            val result =
+                firebaseDatabaseRealtimeClient.getTodayTarget(firebaseAuthClient.getSignInUser()?.userId.toString())
             _todayTargets.value = result
         }
     }
 
     private fun setHabitsData() {
         viewModelScope.launch {
-                firebaseDatabaseRealtimeClient.setHabitData(
-                    HabitsData(
+            firebaseDatabaseRealtimeClient.setHabitData(
+                HabitsData(
                     habitId = "3",
                     name = "Water",
-                    progress = 20,
+                    progress = 100,
                     icon = R.drawable.water_icon
 
                 ),
-                    userId = firebaseAuthClient.getSignInUser()?.userId.toString()
-                )
-                {
+                userId = firebaseAuthClient.getSignInUser()?.userId.toString()
+            )
+            {
 //                  Handle Result di sini
-                }
+            }
 
 
 //            _habitList.value = HabitDataList(listOf(
@@ -125,7 +132,7 @@ class DashBoardViewModel(
                     icon = R.drawable.water_intake_today_target
                 ),
                 userId = firebaseAuthClient.getSignInUser()?.userId.toString()
-            ){
+            ) {
 //                Handle Result di sini
 
             }
@@ -146,13 +153,26 @@ class DashBoardViewModel(
         }
     }
 
-    private fun setActivityProgress() {
+    private fun setActivityProgress(habitsList: HabitDataList) {
         viewModelScope.launch {
+
+            var progress = 0
+            habitsList.habits?.let { habits ->
+                var totalPercentage = 0
+                habits.forEach { data ->
+                    data.progress?.let {
+                        totalPercentage += it
+                    }
+                }
+//                progress = semua progress pada masing2 habits dibagi dengan total habits
+                progress = totalPercentage / habits.size
+            }
+
             _activityProgress.value = ActivityProgressList(
                 listOf(
                     ActivityProgressData(
                         day = "Sunday",
-                        progress = 70,
+                        progress = progress,
                     ),
                     ActivityProgressData(
                         day = "Monday",
@@ -164,7 +184,7 @@ class DashBoardViewModel(
                     ),
                     ActivityProgressData(
                         day = "Wednesday",
-                        progress = 80,
+                        progress = 70,
                     ),
                     ActivityProgressData(
                         day = "Thursday",
