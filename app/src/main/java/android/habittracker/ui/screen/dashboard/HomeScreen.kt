@@ -55,7 +55,8 @@ fun HomeScreen(
         drawerState = drawerState,
         content = {
             HomeScreenContent(dashBoardViewModel = dashBoardViewModel, drawerState = drawerState, navController = navController)
-        }
+        },
+        navController = navController
 
     )
 

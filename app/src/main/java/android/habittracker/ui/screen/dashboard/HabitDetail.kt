@@ -21,12 +21,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
 fun HabitDetail(
     modifier: Modifier = Modifier,
-    dashBoardViewModel: DashBoardViewModel
+    dashBoardViewModel: DashBoardViewModel,
+    navController : NavController
 ) {
     val systemUiController = rememberSystemUiController()
 
@@ -42,7 +44,7 @@ fun HabitDetail(
             .background(Color(0xFF4D57C8))
     ) {
         CustomTopAppBar(
-            onClick = { /*TODO*/ },
+            onClick = { navController.popBackStack() },
             topAppBarForSection = SectionData().dashboard.detailHabit
         )
         Column(

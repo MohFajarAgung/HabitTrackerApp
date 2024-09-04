@@ -3,6 +3,7 @@ package android.habittracker.ui.screen.dashboard.component
 import android.habittracker.R
 import android.habittracker.model.firebase.data.HabitsData
 import android.habittracker.ui.screen.dashboard.DashBoardViewModel
+import android.widget.Toast
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.*
@@ -20,6 +21,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
@@ -33,13 +35,13 @@ fun CustomHabitsGrid(
     navController: NavController
 ) {
     val habits by dashBoardViewModel.habitList.collectAsState()
-    val latestActivity by dashBoardViewModel.latestActivityList.collectAsState()
-
 
     habits.habits?.let {
-        var height = 500
+        val height = remember {
+            mutableStateOf(500)
+        }
         if (it.size <= 2) {
-            height = 250
+            height.value = 260
         }
 
         if (showAllHabits) {
@@ -57,7 +59,7 @@ fun CustomHabitsGrid(
 
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
-                modifier = Modifier.height(height.dp),
+                modifier = Modifier.height(height.value.dp),
                 verticalArrangement = Arrangement.spacedBy(15.dp),
                 horizontalArrangement = Arrangement.spacedBy(15.dp)
             ) {
@@ -65,8 +67,8 @@ fun CustomHabitsGrid(
 //                Jika showAllHabits == true maka tampilkan semua habit
 //                tampilkan cukup sampai 4 grid saja
                     if (index < 4) {
-//                    munculkan tombol pada grid terakhir jika habits lebih dari 4
-                        if (index == 3 && it.size > 4) {
+//                    munculkan tombol pada grid terakhir
+                        if (index == it.size - 1 ) {
                             HabitBox(data = data, buttonAppear = true, navController = navController)
                         } else {
                             HabitBox(data = data, navController = navController)
@@ -95,7 +97,10 @@ fun HabitBox(
         modifier = modifier
             .clip(RoundedCornerShape(15.dp))
             .background(Color.White)
-            .clickable { }
+            .clickable {
+//                Navagasi ke detailHabitScreen
+                navController.navigate("detailHabitScreen")
+            }
     ) {
         Column(
             modifier = modifier
@@ -111,12 +116,13 @@ fun HabitBox(
                 val sweepAngleBlue = remember {
                     mutableStateOf(100f)
                 }
-                val sweepAngle = (data.progress!!.toFloat() / 100) * 360f
+                val sweepAngle = remember {
+                    mutableStateOf((data.progress!!.toFloat() / 100) * 360f)}
 
 //             Ketika data.progress berubah dan jika bernilai >= 40 maka tambah nilai sweepAngleBlue
                 LaunchedEffect(data.progress) {
                     var add = 50
-                    if (data.progress >= 40) {
+                    if (data.progress!! >= 40) {
                         for (i in 40..100 step 10) {
                             if (data.progress in i..i + 10) {
                                 sweepAngleBlue.value += add
@@ -148,7 +154,7 @@ fun HabitBox(
                     drawArc(
                         color = Color(0xFFFFF480),
                         startAngle = -90f, // Start at the top
-                        sweepAngle = sweepAngle,
+                        sweepAngle = sweepAngle.value,
                         useCenter = false, // Don't draw a line to the center
                         style = Stroke(width = 40f)
                     )
@@ -186,6 +192,7 @@ fun HabitBox(
         }
     }
 
+    val context = LocalContext.current
 //    jika buttonAppear == true, maka tambil kan tombol
     if (buttonAppear) {
         Box(
@@ -196,7 +203,9 @@ fun HabitBox(
 
             OutlinedButton(
                 onClick = {
-                          navController.navigate("allHabitsScreen")
+//                          Navigasi ke Create Habit Section
+                          Toast.makeText(context, "Navigasi ke Create Habit Section", Toast.LENGTH_SHORT).show()
+
                 },
                 modifier = Modifier
                     .padding(end = 5.dp)

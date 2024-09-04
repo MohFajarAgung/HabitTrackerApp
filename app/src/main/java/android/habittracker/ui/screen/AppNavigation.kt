@@ -90,7 +90,7 @@ fun AppNavigation(
         }
 
         composable("detailHabitScreen") {
-            HabitDetail(dashBoardViewModel = dashBoardViewModel)
+            HabitDetail(dashBoardViewModel = dashBoardViewModel, navController = navHostController)
         }
 
 

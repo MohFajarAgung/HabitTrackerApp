@@ -76,7 +76,8 @@ fun CustomTodayTargetGrid(
                 )
 
                 Box(
-                    modifier = Modifier.size(32.dp)
+                    modifier = Modifier
+                        .size(32.dp)
                         .clip(RoundedCornerShape(10.dp))
                         .background(
                             brush = Brush.linearGradient(
@@ -85,7 +86,8 @@ fun CustomTodayTargetGrid(
                                     Color(0xFF92A3FD), // End color
                                 )
                             )
-                        ).clickable {
+                        )
+                        .clickable {
 
                         },
                     contentAlignment = Alignment.Center//avoid the oval shape
@@ -101,13 +103,16 @@ fun CustomTodayTargetGrid(
 
             }
             Spacer(modifier = modifier.height(20.dp))
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                verticalArrangement = Arrangement.spacedBy(15.dp),
-                horizontalArrangement = Arrangement.spacedBy(15.dp)
-            ) {
-                items(todayTargets.listTodayTarget!!) { data ->
-                    TodayTargetBox(todayTargets = data)
+            todayTargets.listTodayTarget?.let {
+
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+                    verticalArrangement = Arrangement.spacedBy(15.dp),
+                    horizontalArrangement = Arrangement.spacedBy(15.dp)
+                ) {
+                    items(it) { data ->
+                        TodayTargetBox(todayTargets = data)
+                    }
                 }
             }
         }

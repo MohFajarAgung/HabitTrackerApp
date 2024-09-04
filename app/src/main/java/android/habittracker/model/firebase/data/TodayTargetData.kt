@@ -5,9 +5,10 @@ data class TodayTargetList(
 )
 
 data class TodayTargetData(
-    val target : String?,
-    val toDo : String?,
-    val icon : Int?,
+    val todayTargetId: String? = null,
+    val target : String? = null,
+    val toDo : String? = null,
+    val icon : Int? = null,
 )
 
 

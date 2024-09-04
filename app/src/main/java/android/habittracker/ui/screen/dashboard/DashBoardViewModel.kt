@@ -40,12 +40,14 @@ class DashBoardViewModel(
 
     init {
         getHabitData()
+        getTodayTargetData()
         setHabitsData()
         setTodayTargets()
         setActivityProgress()
         setLatestActivity()
     }
 
+//    function untuk getHabitData dari Firebase Database Realtime
     private fun getHabitData() {
         viewModelScope.launch {
                 val result = firebaseDatabaseRealtimeClient.getHabitData(firebaseAuthClient.getSignInUser()?.userId.toString())
@@ -54,15 +56,22 @@ class DashBoardViewModel(
 
 
     }
+//    function untuk getTodayTargetData dari Firebase Database Realtime
+    private fun getTodayTargetData(){
+        viewModelScope.launch{
+            val result = firebaseDatabaseRealtimeClient.getTodayTarget(firebaseAuthClient.getSignInUser()?.userId.toString())
+            _todayTargets.value = result
+        }
+    }
 
     private fun setHabitsData() {
         viewModelScope.launch {
                 firebaseDatabaseRealtimeClient.setHabitData(
                     HabitsData(
-                    habitId = "5",
-                    name = "Walking",
-                    progress = 100,
-                    icon = R.drawable.walking_icon
+                    habitId = "3",
+                    name = "Water",
+                    progress = 20,
+                    icon = R.drawable.water_icon
 
                 ),
                     userId = firebaseAuthClient.getSignInUser()?.userId.toString()
@@ -108,20 +117,32 @@ class DashBoardViewModel(
 
     private fun setTodayTargets() {
         viewModelScope.launch {
-            _todayTargets.value = TodayTargetList(
-                listOf(
-                    TodayTargetData(
-                        target = "8L",
-                        toDo = "Water Intake",
-                        icon = R.drawable.water_intake_today_target
-                    ),
-                    TodayTargetData(
-                        target = "2400",
-                        toDo = "Foot Steps",
-                        icon = R.drawable.foot_steps_today_target
-                    )
-                )
-            )
+            firebaseDatabaseRealtimeClient.setTodayTarget(
+                todayTargets = TodayTargetData(
+                    todayTargetId = "0",
+                    target = "8L",
+                    toDo = "Water Intake",
+                    icon = R.drawable.water_intake_today_target
+                ),
+                userId = firebaseAuthClient.getSignInUser()?.userId.toString()
+            ){
+//                Handle Result di sini
+
+            }
+//            _todayTargets.value = TodayTargetList(
+//                listOf(
+//                    TodayTargetData(
+//                        target = "8L",
+//                        toDo = "Water Intake",
+//                        icon = R.drawable.water_intake_today_target
+//                    ),
+//                    TodayTargetData(
+//                        target = "2400",
+//                        toDo = "Foot Steps",
+//                        icon = R.drawable.foot_steps_today_target
+//                    )
+//                )
+//            )
         }
     }
 

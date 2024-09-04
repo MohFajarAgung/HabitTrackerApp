@@ -48,7 +48,8 @@ fun AllHabitsScreen(
         drawerState = drawerState,
         content = {
             AllHabitsContent(dashBoardViewModel = dashBoardViewModel, drawerState = drawerState, navController = navController )
-        }
+        },
+        navController = navController
 
     )
 }

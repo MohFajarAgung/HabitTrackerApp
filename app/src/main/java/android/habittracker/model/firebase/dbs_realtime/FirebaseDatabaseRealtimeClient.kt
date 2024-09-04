@@ -3,6 +3,8 @@ package android.habittracker.model.firebase.dbs_realtime
 import android.habittracker.R
 import android.habittracker.model.firebase.data.HabitDataList
 import android.habittracker.model.firebase.data.HabitsData
+import android.habittracker.model.firebase.data.TodayTargetData
+import android.habittracker.model.firebase.data.TodayTargetList
 import android.util.Log
 import com.google.firebase.database.getValue
 import com.google.firebase.database.ktx.database
@@ -73,7 +75,6 @@ class FirebaseDatabaseRealtimeClient {
                 .child("habit")
                 .get().await()
             val habitList = snapshot.children.mapNotNull { dataSnapshot ->
-                Log.d("dgaga", snapshot.toString())
                 dataSnapshot.getValue(HabitsData::class.java)
             }
             HabitDataList(
@@ -85,6 +86,62 @@ class FirebaseDatabaseRealtimeClient {
             HabitDataList(null)
         }
     }
+
+//    Untuk set today target dalam dalam Firebase Database Realtime
+    fun setTodayTarget(
+        todayTargets : TodayTargetData,
+        userId : String,
+        callback : (String) -> Unit
+    ){
+        try {
+            todayTargets.let {
+                val _todayTargets = mapOf(
+                    "target" to it.target,
+                    "toDo" to it.toDo,
+                    "icon" to it.icon
+
+                )
+                database
+                    .child("users")
+                    .child(userId)
+                    .child("todayTarget")
+                    .child(it.todayTargetId.toString())
+                    .setValue(_todayTargets)
+                    .addOnSuccessListener { callback("Set Habit Berhasil") }
+                    .addOnFailureListener { callback("Set Habit Gagal") }
+            }
+        }catch (e : Exception){
+            e.printStackTrace()
+            if(e is CancellationException) throw e
+        }
+
+    }
+
+//    Untuk get Today Target data dari Firebase Database Realtime
+
+    suspend fun getTodayTarget(
+        userId : String,
+    ) : TodayTargetList{
+         return try {
+             val snapshot = database
+                 .child("users")
+                 .child(userId)
+                 .child("todayTarget")
+                 .get().await()
+
+             val todayTargetList = snapshot.children.mapNotNull { dataSnapshot ->
+                 dataSnapshot.getValue(TodayTargetData::class.java)
+             }
+
+             TodayTargetList(todayTargetList)
+
+         }catch (e : Exception){
+             e.printStackTrace()
+             if(e is CancellationException) throw e
+             TodayTargetList(null)
+         }
+    }
+
 
 
 }

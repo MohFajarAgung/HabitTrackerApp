@@ -22,12 +22,14 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 
 @Composable
 fun CustomModalDrawer(
     modifier: Modifier = Modifier,
     drawerState: DrawerState,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
+    navController: NavController
 ) {
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -48,10 +50,14 @@ fun CustomModalDrawer(
 
 
                         ListMenuBox(text = "Profile") {}
-                        ListMenuBox(text = "Today") {}
+                        ListMenuBox(text = "Today") {navController.navigate("homeScreen"){
+                            popUpTo("homeScreen"){
+                                inclusive =  true
+                            }
+                        } }
                         ListMenuBox(text = "Your States") {}
                         ListMenuBox(text = "Challenges") {}
-                        ListMenuBox(text = "All habits") {}
+                        ListMenuBox(text = "All habits") {navController.navigate("allHabitsScreen")}
                         ListMenuBox(text = "Notification") {}
                         ListMenuBox(text = "Setting") {}
                         ListMenuBox(text = "Try Free") {}
