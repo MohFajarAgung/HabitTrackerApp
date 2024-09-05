@@ -1,5 +1,6 @@
 package android.habittracker.ui.screen.dashboard
 
+import android.content.Context
 import android.habittracker.R
 import android.habittracker.model.firebase.auth.FirebaseAuthClient
 import android.habittracker.model.firebase.auth.SignInState
@@ -15,10 +16,12 @@ import android.habittracker.model.firebase.data.TodayTargetList
 import android.habittracker.model.firebase.dbs_realtime.FirebaseDatabaseRealtimeClient
 import android.os.Build
 import android.util.Log
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.ui.text.capitalize
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavController
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -108,19 +111,20 @@ class DashBoardViewModel(
     private fun setTodayHabitsData() {
         viewModelScope.launch {
 
-            firebaseDatabaseRealtimeClient.setTodayHabit(
-                HabitsData(
-                    habitId = "4",
-                    name = "Water",
-                    progress = 20,
-                    icon = R.drawable.water_icon,
-                ),
-                userId = firebaseAuthClient.getSignInUser()?.userId.toString(),
-                date = "2024 10 04"
-            )
-            {
-//                  Handle Result di sini
-            }
+//            firebaseDatabaseRealtimeClient.setTodayHabit(
+//                HabitsData(
+//                    habitId = "3",
+//                    name = "Water",
+//                    progress = 75,
+//                    icon = R.drawable.water_icon
+//
+//                ),
+//                userId = firebaseAuthClient.getSignInUser()?.userId.toString(),
+//                date = "2024 09 06"
+//            )
+//            {
+////                  Handle Result di sini
+//            }
 
 
 //            _habitList.value = HabitDataList(listOf(
@@ -195,6 +199,9 @@ class DashBoardViewModel(
     ) {
         viewModelScope.launch {
             var progress = 0
+            var progressTotal = 0
+            var progressMonthly = 0
+            var totalHabitInMonth = 0
 
             val formatter = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 DateTimeFormatter.ofPattern("yyyy MM dd")
@@ -203,6 +210,7 @@ class DashBoardViewModel(
             }
             _activityProgress.value = ActivityProgressList(null)
             allHabitsMap.date?.forEach { date, habits ->
+
                 when (dropDownValue) {
                     "Weekly" -> {
                         var totalPercentage = 0
@@ -212,7 +220,7 @@ class DashBoardViewModel(
                             }
                         }
                         progress = totalPercentage / habits.size
-                        Log.d("tanggal", date)
+                        Log.d("persentasi seminggu", progress.toString())
 
                         val dateFormatted = LocalDate.parse(date, formatter)
                         val dayOfWeek: String = dateFormatted.dayOfWeek.name.lowercase()
@@ -228,49 +236,62 @@ class DashBoardViewModel(
 
                     "Monthly" -> {
                         var totalPercentage = 0
+
                         habits.forEach { data ->
                             data.progress?.let {
                                 totalPercentage += it
                             }
                         }
+                        progress = totalPercentage
+                        totalHabitInMonth += habits.size
+                        progressTotal += progress
+                        progressMonthly = progressTotal  / totalHabitInMonth
 
-                        progress = totalPercentage / habits.size
+                        Log.d("persentasi perbulan", "${progressTotal} / ${totalHabitInMonth} = ${progressMonthly}")
+
+
 
                         val dateFormatted = LocalDate.parse(date, formatter)
                         val month: String = dateFormatted.month.name.lowercase()
                             .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
                         Log.d("Bulan 3 kali ", month)
 
-
-                        if (_activityProgress.value.data.isNullOrEmpty()) {
-                            val updateActivityProgress =
+                        val updateActivityProgress =
                                 _activityProgress.value.data.orEmpty() +
                                         ActivityProgressData(
                                             day = month,
-                                            progress = progress,
+                                            progress = progressMonthly,
                                         )
                             _activityProgress.value = ActivityProgressList(updateActivityProgress)
-                        } else {
-                            var monthCheck = false
-                            for (item in _activityProgress.value.data!!) {
-                                Log.d("ceckcek", item.day.toString())
-                                if (item.day == month) {
-                                    monthCheck = true
-                                    break
-                                }
-                            }
-                            if (monthCheck == false) {
-                                Log.d("ditambah", "dfgadga")
-                                val updateActivityProgress =
-                                    _activityProgress.value.data.orEmpty() +
-                                            ActivityProgressData(
-                                                day = month,
-                                                progress = progress,
-                                            )
-                                _activityProgress.value =
-                                    ActivityProgressList(updateActivityProgress)
-                            }
-                        }
+//                        if (_activityProgress.value.data.isNullOrEmpty()) {
+//
+//                            val updateActivityProgress =
+//                                _activityProgress.value.data.orEmpty() +
+//                                        ActivityProgressData(
+//                                            day = month,
+//                                            progress = progressMonthly,
+//                                        )
+//                            _activityProgress.value = ActivityProgressList(updateActivityProgress)
+//                        } else {
+//
+//                            var monthCheck = false
+//                            for (item in _activityProgress.value.data!!) {
+//                                if (item.day == month) {
+//                                    monthCheck = true
+//                                    break
+//                                }
+//                            }
+//                            if (monthCheck == false) {
+//                                val updateActivityProgress =
+//                                    _activityProgress.value.data.orEmpty() +
+//                                            ActivityProgressData(
+//                                                day = month,
+//                                                progress = progressMonthly,
+//                                            )
+//                                _activityProgress.value =
+//                                    ActivityProgressList(updateActivityProgress)
+//                            }
+//                        }
 
                     }
 

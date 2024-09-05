@@ -7,6 +7,7 @@ import android.habittracker.ui.screen.dashboard.component.CustomDateScroller
 import android.habittracker.ui.screen.dashboard.component.CustomHabitsGrid
 import android.habittracker.ui.screen.dashboard.component.CustomLatestActivityList
 import android.habittracker.ui.screen.dashboard.component.CustomModalDrawer
+import android.habittracker.ui.screen.registration_section.AuthViewModel
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -41,6 +42,7 @@ fun HomeScreen(
     navController: NavController,
     dashBoardViewModel: DashBoardViewModel,
     signInState: SignInState,
+    authViewModel: AuthViewModel,
 ) {
     val systemUiController = rememberSystemUiController()
 
@@ -56,7 +58,8 @@ fun HomeScreen(
         content = {
             HomeScreenContent(dashBoardViewModel = dashBoardViewModel, drawerState = drawerState, navController = navController)
         },
-        navController = navController
+        navController = navController,
+        authViewModel = authViewModel
 
     )
 

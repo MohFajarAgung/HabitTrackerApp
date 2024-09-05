@@ -30,7 +30,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun CustomHabitsGrid(
     dashBoardViewModel: DashBoardViewModel,

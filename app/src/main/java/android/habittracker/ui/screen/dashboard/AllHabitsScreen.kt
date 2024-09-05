@@ -6,6 +6,7 @@ import android.habittracker.ui.screen.dashboard.component.CustomDateScroller
 import android.habittracker.ui.screen.dashboard.component.CustomHabitsGrid
 import android.habittracker.ui.screen.dashboard.component.CustomLatestActivityList
 import android.habittracker.ui.screen.dashboard.component.CustomModalDrawer
+import android.habittracker.ui.screen.registration_section.AuthViewModel
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -33,7 +34,8 @@ import kotlinx.coroutines.launch
 fun AllHabitsScreen(
     modifier: Modifier = Modifier,
     dashBoardViewModel: DashBoardViewModel,
-    navController: NavController
+    navController: NavController,
+    authViewModel: AuthViewModel
 ) {
     val systemUiController = rememberSystemUiController()
 
@@ -53,7 +55,8 @@ fun AllHabitsScreen(
                 navController = navController
             )
         },
-        navController = navController
+        navController = navController,
+        authViewModel = authViewModel
 
     )
 }

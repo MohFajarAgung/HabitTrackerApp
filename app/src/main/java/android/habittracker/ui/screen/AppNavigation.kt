@@ -82,11 +82,11 @@ fun AppNavigation(
         }
 
         composable("homeScreen") {
-            HomeScreen(navController = navHostController, dashBoardViewModel = dashBoardViewModel, signInState = state)
+            HomeScreen(navController = navHostController, dashBoardViewModel = dashBoardViewModel, signInState = state, authViewModel = authViewModel)
         }
 
         composable("allHabitsScreen"){
-            AllHabitsScreen(dashBoardViewModel = dashBoardViewModel, navController = navHostController)
+            AllHabitsScreen(dashBoardViewModel = dashBoardViewModel, navController = navHostController, authViewModel = authViewModel)
         }
 
         composable("detailHabitScreen") {
