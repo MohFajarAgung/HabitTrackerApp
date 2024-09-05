@@ -27,17 +27,14 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-@RequiresApi(Build.VERSION_CODES.O)
 class DashBoardViewModel(
     private val firebaseAuthClient: FirebaseAuthClient,
     private val firebaseDatabaseRealtimeClient: FirebaseDatabaseRealtimeClient
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(SignInState())
     private val _todayHabitList = MutableStateFlow(TodayHabitDataList())
     val todayHabitList = _todayHabitList.asStateFlow()
     private val _allHabitList = MutableStateFlow(AllHabitDataList())
-    val allHabitList = _allHabitList.asStateFlow()
 
     private val _todayTargets = MutableStateFlow(TodayTargetList())
     val todayTargets = _todayTargets.asStateFlow()
@@ -48,32 +45,36 @@ class DashBoardViewModel(
     private val _latestActivityList = MutableStateFlow(LatestActivityList())
     val latestActivityList = _latestActivityList.asStateFlow()
 
+    val currentDate = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        LocalDate.now()
+    } else {
+        TODO("VERSION.SDK_INT < O")
+    }
+    val formattedDate = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        currentDate.format(DateTimeFormatter.ofPattern("yyyy MM dd"))
+    } else {
+        TODO("VERSION.SDK_INT < O")
+    }
+
     init {
         getTodayHabitData()
         getAllHabitData()
         getTodayTargetData()
         setTodayHabitsData()
         setTodayTargets()
-//        setActivityProgress()
         setLatestActivity()
     }
 
 
     //    function untuk getTodayHabitData dari Firebase Database Realtime
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun getTodayHabitData() {
         viewModelScope.launch {
-            val currentDate = LocalDate.now()
-            val formattedDate = currentDate.format(DateTimeFormatter.ofPattern("dd MMMM yyyy"))
             val result =
                 firebaseDatabaseRealtimeClient.getTodayHabitData(
                     firebaseAuthClient.getSignInUser()?.userId.toString(),
                     formattedDate
                 )
             _todayHabitList.value = result
-            _todayHabitList.value?.let {
-//                setActivityProgress(it)
-            }
         }
 
 
@@ -86,7 +87,7 @@ class DashBoardViewModel(
 
             _allHabitList.value = result
 
-            _allHabitList.value?.let {
+            _allHabitList.value.let {
                 setActivityProgress(it)
             }
 
@@ -104,20 +105,18 @@ class DashBoardViewModel(
     }
 
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun setTodayHabitsData() {
         viewModelScope.launch {
-            val currentDate = LocalDate.now()
-            val formattedDate = currentDate.format(DateTimeFormatter.ofPattern("dd MMMM yyyy"))
+
             firebaseDatabaseRealtimeClient.setTodayHabit(
                 HabitsData(
-                    habitId = "2",
+                    habitId = "4",
                     name = "Water",
-                    progress = 100,
+                    progress = 20,
                     icon = R.drawable.water_icon,
                 ),
                 userId = firebaseAuthClient.getSignInUser()?.userId.toString(),
-                date = formattedDate
+                date = "2024 10 04"
             )
             {
 //                  Handle Result di sini
@@ -189,37 +188,96 @@ class DashBoardViewModel(
         }
     }
 
-    private fun setActivityProgress(allHabitsMap: AllHabitDataList) {
+
+    fun setActivityProgress(
+        allHabitsMap: AllHabitDataList = _allHabitList.value,
+        dropDownValue: String = "Weekly"
+    ) {
         viewModelScope.launch {
-
-
             var progress = 0
-//
-            allHabitsMap.date?.forEach { date, habits ->
-                var totalPercentage = 0
-                habits.forEach { data ->
-                    data.progress?.let {
-                        totalPercentage += it
-                    }
-                }
-                progress = totalPercentage / habits.size
-                Log.d("tanggal", date)
 
-                // Define the formatter according to the date format
-                val formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
-                // Parse the date string into a LocalDate object
-                val dateFormatted = LocalDate.parse(date, formatter)
-                // Get the day of the week
-                val dayOfWeek: String = dateFormatted.dayOfWeek.name.lowercase()
-                    .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
-
-                val updateActivityProgress = _activityProgress.value.data.orEmpty() +
-                        ActivityProgressData(
-                            day = dayOfWeek,
-                            progress = progress,
-                        )
-                _activityProgress.value = ActivityProgressList(updateActivityProgress)
+            val formatter = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                DateTimeFormatter.ofPattern("yyyy MM dd")
+            } else {
+                TODO("VERSION.SDK_INT < O")
             }
+            _activityProgress.value = ActivityProgressList(null)
+            allHabitsMap.date?.forEach { date, habits ->
+                when (dropDownValue) {
+                    "Weekly" -> {
+                        var totalPercentage = 0
+                        habits.forEach { data ->
+                            data.progress?.let {
+                                totalPercentage += it
+                            }
+                        }
+                        progress = totalPercentage / habits.size
+                        Log.d("tanggal", date)
+
+                        val dateFormatted = LocalDate.parse(date, formatter)
+                        val dayOfWeek: String = dateFormatted.dayOfWeek.name.lowercase()
+                            .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
+                        val updateActivityProgress = _activityProgress.value.data.orEmpty() +
+                                ActivityProgressData(
+                                    day = dayOfWeek,
+                                    progress = progress,
+                                )
+                        _activityProgress.value = ActivityProgressList(updateActivityProgress)
+
+                    }
+
+                    "Monthly" -> {
+                        var totalPercentage = 0
+                        habits.forEach { data ->
+                            data.progress?.let {
+                                totalPercentage += it
+                            }
+                        }
+
+                        progress = totalPercentage / habits.size
+
+                        val dateFormatted = LocalDate.parse(date, formatter)
+                        val month: String = dateFormatted.month.name.lowercase()
+                            .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
+                        Log.d("Bulan 3 kali ", month)
+
+
+                        if (_activityProgress.value.data.isNullOrEmpty()) {
+                            val updateActivityProgress =
+                                _activityProgress.value.data.orEmpty() +
+                                        ActivityProgressData(
+                                            day = month,
+                                            progress = progress,
+                                        )
+                            _activityProgress.value = ActivityProgressList(updateActivityProgress)
+                        } else {
+                            var monthCheck = false
+                            for (item in _activityProgress.value.data!!) {
+                                Log.d("ceckcek", item.day.toString())
+                                if (item.day == month) {
+                                    monthCheck = true
+                                    break
+                                }
+                            }
+                            if (monthCheck == false) {
+                                Log.d("ditambah", "dfgadga")
+                                val updateActivityProgress =
+                                    _activityProgress.value.data.orEmpty() +
+                                            ActivityProgressData(
+                                                day = month,
+                                                progress = progress,
+                                            )
+                                _activityProgress.value =
+                                    ActivityProgressList(updateActivityProgress)
+                            }
+                        }
+
+                    }
+
+                }
+
+            }
+
 
         }
     }

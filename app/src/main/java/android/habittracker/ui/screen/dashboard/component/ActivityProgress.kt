@@ -19,11 +19,20 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -63,32 +72,33 @@ fun ActivityProgress(
                     )
                 )
 
-                Box(
-                    modifier = Modifier
-                        .size(32.dp)
-                        .clip(RoundedCornerShape(10.dp))
-                        .background(
-                            brush = Brush.linearGradient(
-                                colors = listOf(
-                                    Color(0xFF9DCEFFF),  // Start color
-                                    Color(0xFF92A3FD), // End color
-                                )
-                            )
-                        )
-                        .clickable {
+//                Box(
+//                    modifier = Modifier
+//                        .size(32.dp)
+//                        .clip(RoundedCornerShape(10.dp))
+//                        .background(
+//                            brush = Brush.linearGradient(
+//                                colors = listOf(
+//                                    Color(0xFF9DCEFFF),  // Start color
+//                                    Color(0xFF92A3FD), // End color
+//                                )
+//                            )
+//                        )
+//                        .clickable {
+//
+//                        },
+//                    contentAlignment = Alignment.Center//avoid the oval shape
+//                ) {
+//                    Icon(
+//                        modifier = modifier.size(18.dp),
+//                        painter = painterResource(id = R.drawable.baseline_add),
+//                        tint = Color.White,
+//                        contentDescription = "tombol kembali"
+//
+//                    )
+//                }
 
-                        },
-                    contentAlignment = Alignment.Center//avoid the oval shape
-                ) {
-                    Icon(
-                        modifier = modifier.size(18.dp),
-                        painter = painterResource(id = R.drawable.baseline_add),
-                        tint = Color.White,
-                        contentDescription = "tombol kembali"
-
-                    )
-                }
-
+                CustomDrowDown(dashBoardViewModel = dashBoardViewModel)
             }
 
             Row(
@@ -144,6 +154,72 @@ fun ActivityProgress(
             }
 
 
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CustomDrowDown(
+    modifier: Modifier = Modifier,
+    dashBoardViewModel: DashBoardViewModel
+) {
+    var expanded by remember { mutableStateOf(false) }
+    var selectedItem by remember { mutableStateOf("Weekly") }
+
+    // Items for the dropdown menu
+    val items = listOf("Weekly", "Monthly")
+
+
+    // Button to trigger the dropdown
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = { expanded = !expanded },
+    ) {
+        Box(
+            modifier = modifier
+                .menuAnchor()
+                .clip(RoundedCornerShape(20.dp))
+                .background(Color.White)
+        ){
+            Row(
+                modifier = modifier.padding(vertical = 10.dp, horizontal = 20.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ){
+            Text(
+                text = selectedItem,
+                style = TextStyle(
+                    color = Color.Black,
+                    fontSize = 10.sp,
+                    fontWeight = FontWeight.Medium
+                )
+            )
+                Spacer(modifier = modifier.width(5.dp))
+            Icon(
+                modifier = modifier.size(20.dp),
+                painter = painterResource(id = R.drawable.dropdown_icon),
+                contentDescription = "Icon Dropdown Button")
+            }
+        }
+
+        // Dropdown menu
+        ExposedDropdownMenu(
+            modifier = modifier.background(Color.White),
+            expanded = expanded,
+            onDismissRequest = {
+                expanded = false
+            }
+        ) {
+            items.forEach { item ->
+                DropdownMenuItem(
+                    text = { Text(item) },
+                    onClick = {
+                        dashBoardViewModel.setActivityProgress(dropDownValue = item)
+                        selectedItem = item
+                        expanded = false
+                    }
+                )
+            }
         }
     }
 }

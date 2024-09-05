@@ -47,7 +47,11 @@ fun AllHabitsScreen(
     CustomModalDrawer(
         drawerState = drawerState,
         content = {
-            AllHabitsContent(dashBoardViewModel = dashBoardViewModel, drawerState = drawerState, navController = navController )
+            AllHabitsContent(
+                dashBoardViewModel = dashBoardViewModel,
+                drawerState = drawerState,
+                navController = navController
+            )
         },
         navController = navController
 
@@ -74,11 +78,15 @@ fun AllHabitsContent(
         Column(
             modifier = modifier
                 .fillMaxSize()
-                .padding( horizontal = 15.dp)
+                .padding(horizontal = 15.dp)
         ) {
             Spacer(modifier = modifier.height(30.dp))
 
-            CustomHabitsGrid(dashBoardViewModel = dashBoardViewModel, showAllHabits = true, navController = navController )
+            CustomHabitsGrid(
+                dashBoardViewModel = dashBoardViewModel,
+                showAllHabits = true,
+                navController = navController
+            )
 
 
         }
