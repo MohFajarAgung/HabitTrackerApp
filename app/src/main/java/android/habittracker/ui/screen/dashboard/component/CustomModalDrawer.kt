@@ -54,7 +54,7 @@ fun CustomModalDrawer(
                     ) {
 
 
-                        ListMenuBox(text = "Profile") {}
+                        ListMenuBox(text = "Profile") {navController.navigate("profileScreen")}
                         ListMenuBox(text = "Today") {navController.navigate("homeScreen"){
                             popUpTo("homeScreen"){
                                 inclusive =  true

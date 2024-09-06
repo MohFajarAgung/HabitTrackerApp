@@ -127,6 +127,27 @@ fun CustomTopAppBar(
                         }
                     }
                 }
+
+//                Profile
+                sectionData.profileAndPayment.profileScreen -> {
+                    OutlinedButton(
+                        onClick = {
+                            onClick()
+                        },
+                        modifier = Modifier.size(43.dp),  //avoid the oval shape
+                        shape = RoundedCornerShape(20.dp),
+                        border = BorderStroke(color = Color.Transparent, width = 0.dp),
+                        contentPadding = PaddingValues(0.dp),  //avoid the little icon
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = Color(0xFFFFFDFB))
+                    ) {
+                        Icon(
+                            modifier = modifier.size(38.dp),
+                            painter = painterResource(id = R.drawable.list_menu),
+                            contentDescription = "tombol list menu"
+                        )
+                    }
+                }
+
             }
 //          End Dashboard
         },
@@ -137,6 +158,18 @@ fun CustomTopAppBar(
                         modifier = modifier.fillMaxWidth().padding(end = 40.dp),
                         textAlign = TextAlign.Center,
                         text = "All Habits",
+                        style = TextStyle(
+                            color = Color.White,
+                            fontWeight = FontWeight.Medium,
+                            fontSize = 24.sp
+                        )
+                    )
+                }
+                sectionData.profileAndPayment.profileScreen -> {
+                    Text(
+                        modifier = modifier.fillMaxWidth().padding(end = 40.dp),
+                        textAlign = TextAlign.Center,
+                        text = "Profile",
                         style = TextStyle(
                             color = Color.White,
                             fontWeight = FontWeight.Medium,

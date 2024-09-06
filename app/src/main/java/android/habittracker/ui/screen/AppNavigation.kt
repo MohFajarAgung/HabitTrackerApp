@@ -5,6 +5,7 @@ import android.habittracker.ui.screen.dashboard.DashBoardViewModel
 import android.habittracker.ui.screen.dashboard.DashboardScreen
 import android.habittracker.ui.screen.dashboard.HabitDetail
 import android.habittracker.ui.screen.dashboard.HomeScreen
+import android.habittracker.ui.screen.paymentandprofile.ProfileScreen
 import android.habittracker.ui.screen.registration_section.AuthViewModel
 import android.habittracker.ui.screen.registration_section.OnBoardingScreen
 import android.habittracker.ui.screen.registration_section.SignInScreen
@@ -91,6 +92,13 @@ fun AppNavigation(
 
         composable("detailHabitScreen") {
             HabitDetail(dashBoardViewModel = dashBoardViewModel, navController = navHostController)
+        }
+
+
+//        Profile
+
+        composable("profileScreen"){
+            ProfileScreen(navController = navHostController, authViewModel = authViewModel )
         }
 
 
