@@ -4,6 +4,7 @@ import android.habittracker.R
 import android.habittracker.model.firebase.data.TodayTargetData
 import android.habittracker.model.firebase.data.TodayTargetList
 import android.habittracker.ui.screen.dashboard.DashBoardViewModel
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -37,6 +38,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -52,6 +54,7 @@ fun CustomTodayTargetGrid(
 
     val todayTargets by dashBoardViewModel.todayTargets.collectAsState()
 
+    val context = LocalContext.current
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(20.dp))
@@ -88,7 +91,7 @@ fun CustomTodayTargetGrid(
                             )
                         )
                         .clickable {
-
+                          Toast.makeText(context, "Navigasi ke TodayTargetScreen", Toast.LENGTH_SHORT).show()
                         },
                     contentAlignment = Alignment.Center//avoid the oval shape
                 ) {

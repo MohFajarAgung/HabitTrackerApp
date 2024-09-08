@@ -111,20 +111,20 @@ class DashBoardViewModel(
     private fun setTodayHabitsData() {
         viewModelScope.launch {
 
-//            firebaseDatabaseRealtimeClient.setTodayHabit(
-//                HabitsData(
-//                    habitId = "3",
-//                    name = "Water",
-//                    progress = 75,
-//                    icon = R.drawable.water_icon
-//
-//                ),
-//                userId = firebaseAuthClient.getSignInUser()?.userId.toString(),
-//                date = "2024 09 06"
-//            )
-//            {
-////                  Handle Result di sini
-//            }
+            firebaseDatabaseRealtimeClient.setTodayHabit(
+                HabitsData(
+                    habitId = "4",
+                    name = "Cycling",
+                    progress = 100,
+                    icon = R.drawable.cycling_icon
+
+                ),
+                userId = firebaseAuthClient.getSignInUser()?.userId.toString(),
+                date = "2024 10 07"
+            )
+            {
+//                  Handle Result di sini
+            }
 
 
 //            _habitList.value = HabitDataList(listOf(
@@ -197,109 +197,88 @@ class DashBoardViewModel(
         allHabitsMap: AllHabitDataList = _allHabitList.value,
         dropDownValue: String = "Weekly"
     ) {
-        viewModelScope.launch {
-            var progress = 0
-            var progressTotal = 0
-            var progressMonthly = 0
-            var totalHabitInMonth = 0
+        var progress = 0
+        var progressMonthly = 0
 
-            val formatter = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                DateTimeFormatter.ofPattern("yyyy MM dd")
-            } else {
-                TODO("VERSION.SDK_INT < O")
-            }
-            _activityProgress.value = ActivityProgressList(null)
-            allHabitsMap.date?.forEach { date, habits ->
+        val formatter = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            DateTimeFormatter.ofPattern("yyyy MM dd")
+        } else {
+            TODO("VERSION.SDK_INT < O")
+        }
 
-                when (dropDownValue) {
-                    "Weekly" -> {
-                        var totalPercentage = 0
-                        habits.forEach { data ->
-                            data.progress?.let {
-                                totalPercentage += it
-                            }
+        _activityProgress.value = ActivityProgressList(null)
+
+        when (dropDownValue) {
+            "Weekly" -> {
+                allHabitsMap.date?.forEach { date, habits ->
+                    var totalPercentage = 0
+                    habits.forEach { data ->
+                        data.progress?.let {
+                            totalPercentage += it
                         }
-                        progress = totalPercentage / habits.size
-                        Log.d("persentasi seminggu", progress.toString())
-
-                        val dateFormatted = LocalDate.parse(date, formatter)
-                        val dayOfWeek: String = dateFormatted.dayOfWeek.name.lowercase()
-                            .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
-                        val updateActivityProgress = _activityProgress.value.data.orEmpty() +
-                                ActivityProgressData(
-                                    day = dayOfWeek,
-                                    progress = progress,
-                                )
-                        _activityProgress.value = ActivityProgressList(updateActivityProgress)
-
                     }
+                    progress = totalPercentage / habits.size
+                    Log.d("persentasi seminggu", progress.toString())
 
-                    "Monthly" -> {
-                        var totalPercentage = 0
+                    val dateFormatted = LocalDate.parse(date, formatter)
+                    val dayOfWeek: String = dateFormatted.dayOfWeek.name.lowercase()
+                        .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
 
-                        habits.forEach { data ->
-                            data.progress?.let {
-                                totalPercentage += it
-                            }
-                        }
-                        progress = totalPercentage
-                        totalHabitInMonth += habits.size
-                        progressTotal += progress
-                        progressMonthly = progressTotal  / totalHabitInMonth
-
-                        Log.d("persentasi perbulan", "${progressTotal} / ${totalHabitInMonth} = ${progressMonthly}")
-
-
-
-                        val dateFormatted = LocalDate.parse(date, formatter)
-                        val month: String = dateFormatted.month.name.lowercase()
-                            .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
-                        Log.d("Bulan 3 kali ", month)
-
-                        val updateActivityProgress =
-                                _activityProgress.value.data.orEmpty() +
-                                        ActivityProgressData(
-                                            day = month,
-                                            progress = progressMonthly,
-                                        )
-                            _activityProgress.value = ActivityProgressList(updateActivityProgress)
-//                        if (_activityProgress.value.data.isNullOrEmpty()) {
-//
-//                            val updateActivityProgress =
-//                                _activityProgress.value.data.orEmpty() +
-//                                        ActivityProgressData(
-//                                            day = month,
-//                                            progress = progressMonthly,
-//                                        )
-//                            _activityProgress.value = ActivityProgressList(updateActivityProgress)
-//                        } else {
-//
-//                            var monthCheck = false
-//                            for (item in _activityProgress.value.data!!) {
-//                                if (item.day == month) {
-//                                    monthCheck = true
-//                                    break
-//                                }
-//                            }
-//                            if (monthCheck == false) {
-//                                val updateActivityProgress =
-//                                    _activityProgress.value.data.orEmpty() +
-//                                            ActivityProgressData(
-//                                                day = month,
-//                                                progress = progressMonthly,
-//                                            )
-//                                _activityProgress.value =
-//                                    ActivityProgressList(updateActivityProgress)
-//                            }
-//                        }
-
-                    }
+                    val updateActivityProgress = _activityProgress.value.data.orEmpty() +
+                            ActivityProgressData(
+                                day = dayOfWeek,
+                                progress = progress,
+                            )
+                    _activityProgress.value = ActivityProgressList(updateActivityProgress)
 
                 }
-
             }
 
+            "Monthly" -> {
+                // Membuat peta untuk menyimpan total progress per bulan
+                val monthlyProgressMap =
+                    mutableMapOf<String, Pair<Int, Int>>() // (totalProgress, totalHabits)
 
+                allHabitsMap.date?.forEach { date, habits ->
+                    val dateFormatted = LocalDate.parse(date, formatter)
+                    val month: String = dateFormatted.month.name.lowercase()
+                        .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
+
+                    var totalPercentage = 0
+                    habits.forEach { data ->
+                        data.progress?.let {
+                            totalPercentage += it
+                        }
+                    }
+
+                    // Menambahkan data progress dan habit untuk bulan yang sedang diproses
+                    val (currentProgress, currentHabitCount) = monthlyProgressMap[month] ?: Pair(
+                        0,
+                        0
+                    )
+
+                    Log.d("bulan ${month}", totalPercentage.toString())
+                    monthlyProgressMap[month] = Pair(
+                        currentProgress + totalPercentage, // update total progress
+                        currentHabitCount + habits.size   // update total jumlah habit
+                    )
+                }
+
+                // Setelah semua data terkumpul, hitung dan update progress bulanan
+                monthlyProgressMap.forEach { (month, progressData) ->
+                    val (totalProgress, totalHabits) = progressData
+                    progressMonthly = totalProgress / totalHabits
+
+                    Log.d("persentasi perbulan", "$totalProgress / $totalHabits = $progressMonthly")
+
+                    val updateActivityProgress = _activityProgress.value.data.orEmpty() +
+                            ActivityProgressData(
+                                day = month, // Menyimpan nama bulan
+                                progress = progressMonthly,
+                            )
+                    _activityProgress.value = ActivityProgressList(updateActivityProgress)
+                }
+            }
         }
     }
 
