@@ -28,6 +28,7 @@ import kotlinx.coroutines.launch
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoField
 import java.util.Locale
 
 class DashBoardViewModel(
@@ -111,20 +112,20 @@ class DashBoardViewModel(
     private fun setTodayHabitsData() {
         viewModelScope.launch {
 
-//            firebaseDatabaseRealtimeClient.setTodayHabit(
-//                HabitsData(
-//                    habitId = "7",
-//                    name = "Water",
-//                    progress = 30,
-//                    icon = R.drawable.water_icon
-//
-//                ),
-//                userId = firebaseAuthClient.getSignInUser()?.userId.toString(),
-//                date = "2024 09 15"
-//            )
-//            {
-////                  Handle Result di sini
-//            }
+            firebaseDatabaseRealtimeClient.setTodayHabit(
+                HabitsData(
+                    habitId = "7",
+                    name = "Water",
+                    progress = 30,
+                    icon = R.drawable.water_icon
+
+                ),
+                userId = firebaseAuthClient.getSignInUser()?.userId.toString(),
+                date = "2024 10 15"
+            )
+            {
+//                  Handle Result di sini
+            }
 
 
 //            _habitList.value = HabitDataList(listOf(
@@ -197,7 +198,6 @@ class DashBoardViewModel(
         allHabitsMap: AllHabitDataList = _allHabitList.value,
         dropDownValue: String = "Weekly"
     ) {
-        var progress = 0
         var progressMonthly = 0
 
         val formatter = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -210,27 +210,45 @@ class DashBoardViewModel(
 
         when (dropDownValue) {
             "Weekly" -> {
+                // Fungsi untuk menghitung tahun dan minggu dari sebuah tanggal
+                fun getYearWeek(date: LocalDate): Pair<Int, Int> {
+                    val weekOfYear = date.get(ChronoField.ALIGNED_WEEK_OF_YEAR)
+                    val year = date.year
+                    return Pair(year, weekOfYear)
+                }
+                // Dapatkan tahun dan minggu dari hari ini
+                val currentWeek = getYearWeek(LocalDate.now())
+
+            // Proses data hanya jika berada dalam minggu yang sama dengan hari ini
                 allHabitsMap.date?.forEach { date, habits ->
-                    var totalPercentage = 0
-                    habits.forEach { data ->
-                        data.progress?.let {
-                            totalPercentage += it
-                        }
-                    }
-                    progress = totalPercentage / habits.size
-                    Log.d("persentasi seminggu", progress.toString())
-
                     val dateFormatted = LocalDate.parse(date, formatter)
-                    val dayOfWeek: String = dateFormatted.dayOfWeek.name.lowercase()
-                        .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
+                    val habitWeek = getYearWeek(dateFormatted)
 
-                    val updateActivityProgress = _activityProgress.value.data.orEmpty() +
-                            ActivityProgressData(
-                                day = dayOfWeek,
-                                progress = progress,
-                            )
-                    _activityProgress.value = ActivityProgressList(updateActivityProgress)
+                    // Cek apakah tanggal berada dalam minggu yang sama dengan minggu hari ini
+                    if (habitWeek == currentWeek) {
+                        // Proses data karena berada di minggu yang sama dengan hari ini
+                        var totalPercentage = 0
+                        habits.forEach { data ->
+                            data.progress?.let {
+                                totalPercentage += it
+                            }
+                        }
+                        val progress = totalPercentage / habits.size
 
+                        val dayOfWeek: String = dateFormatted.dayOfWeek.name.lowercase()
+                            .replaceFirstChar { it.titlecase(Locale.getDefault()) }
+
+                        // Tambahkan ke progress yang sesuai
+                        val updateActivityProgress = _activityProgress.value.data.orEmpty() +
+                                ActivityProgressData(
+                                    day = dayOfWeek,
+                                    progress = progress,
+                                )
+                        _activityProgress.value = ActivityProgressList(updateActivityProgress)
+                    } else {
+                        // Tanggal berada di minggu yang berbeda, diabaikan
+                        Log.d("Ignored Date", "$date berada di minggu yang berbeda dari minggu ini")
+                    }
                 }
             }
 

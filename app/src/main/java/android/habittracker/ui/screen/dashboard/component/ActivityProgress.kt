@@ -108,13 +108,8 @@ fun ActivityProgress(
                     .background(Color.White)
                     .padding(15.dp),
             ) {
-                activityProgress.data?.let {
-
-                    var size = 6
-                    if(it.size < 7){
-                        size = it.size - 1
-                    }
-                    for (i in 0..size) {
+                activityProgress.data?.let { data ->
+                    data.forEach {
                         Column(
                             modifier = Modifier
                                 .weight(1f)
@@ -122,7 +117,7 @@ fun ActivityProgress(
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             val height =
-                                (activityProgress.data!![i].progress!!.toFloat() / 100f) * 150f
+                                (it.progress!!.toFloat() / 100f) * 150f
                             Row(
                                 modifier.height(150.dp),
                                 verticalAlignment = Alignment.Bottom
@@ -145,7 +140,7 @@ fun ActivityProgress(
                             }
                             Spacer(modifier = modifier.height(10.dp))
                             Text(
-                                text = activityProgress.data!![i].day!!.take(3),
+                                text = it.day!!.take(3),
                                 maxLines = 1,
                                 style = TextStyle(
                                     fontSize = 12.sp,
@@ -174,7 +169,7 @@ fun CustomDrowDown(
     // Items for the dropdown menu
     val items = listOf("Weekly", "Monthly")
 
-    LaunchedEffect(selectedItem){
+    LaunchedEffect(selectedItem) {
         dashBoardViewModel.setActivityProgress(dropDownValue = selectedItem)
     }
 
@@ -189,24 +184,25 @@ fun CustomDrowDown(
                 .menuAnchor()
                 .clip(RoundedCornerShape(20.dp))
                 .background(Color.White)
-        ){
+        ) {
             Row(
                 modifier = modifier.padding(vertical = 10.dp, horizontal = 20.dp),
                 verticalAlignment = Alignment.CenterVertically
-            ){
-            Text(
-                text = selectedItem,
-                style = TextStyle(
-                    color = Color.Black,
-                    fontSize = 10.sp,
-                    fontWeight = FontWeight.Medium
+            ) {
+                Text(
+                    text = selectedItem,
+                    style = TextStyle(
+                        color = Color.Black,
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.Medium
+                    )
                 )
-            )
                 Spacer(modifier = modifier.width(5.dp))
-            Icon(
-                modifier = modifier.size(20.dp),
-                painter = painterResource(id = R.drawable.dropdown_icon),
-                contentDescription = "Icon Dropdown Button")
+                Icon(
+                    modifier = modifier.size(20.dp),
+                    painter = painterResource(id = R.drawable.dropdown_icon),
+                    contentDescription = "Icon Dropdown Button"
+                )
             }
         }
 
