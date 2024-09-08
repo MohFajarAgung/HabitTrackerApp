@@ -1,11 +1,8 @@
 package android.habittracker.ui.screen.dashboard.component
 
 import android.habittracker.R
-import android.habittracker.model.firebase.data.ActivityProgressData
-import android.habittracker.ui.screen.DashBoardScreenData
 import android.habittracker.ui.screen.dashboard.DashBoardViewModel
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,16 +13,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -41,7 +34,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -110,6 +102,18 @@ fun ActivityProgress(
             ) {
                 activityProgress.data?.let { data ->
                     data.forEach {
+                        var color = remember {
+                            listOf(
+                                Color(0xFF72FFBB), // Start color
+                                Color(0xFF3CFE38)
+                            )
+                        }
+                        if(it.isTodayOrCurrentMonthly){
+                            color = listOf(
+                                Color.White,
+                                Color.Black
+                            )
+                        }
                         Column(
                             modifier = Modifier
                                 .weight(1f)
@@ -129,10 +133,7 @@ fun ActivityProgress(
                                         .clip(RoundedCornerShape(8.dp))
                                         .background(
                                             brush = Brush.linearGradient(
-                                                colors = listOf(
-                                                    Color(0xFF72FFBB), // Start color
-                                                    Color(0xFF3CFE38)  // End color
-                                                )
+                                                colors = color
                                             )
                                         )
                                 )

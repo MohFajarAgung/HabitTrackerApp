@@ -6,4 +6,5 @@ data class ActivityProgressList(
 data class ActivityProgressData(
     val day : String?,
     val progress : Int?,
+    val isTodayOrCurrentMonthly : Boolean = false
 )

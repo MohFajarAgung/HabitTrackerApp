@@ -1,9 +1,7 @@
 package android.habittracker.ui.screen.dashboard
 
-import android.content.Context
 import android.habittracker.R
 import android.habittracker.model.firebase.auth.FirebaseAuthClient
-import android.habittracker.model.firebase.auth.SignInState
 import android.habittracker.model.firebase.data.ActivityProgressData
 import android.habittracker.model.firebase.data.ActivityProgressList
 import android.habittracker.model.firebase.data.AllHabitDataList
@@ -16,16 +14,11 @@ import android.habittracker.model.firebase.data.TodayTargetList
 import android.habittracker.model.firebase.dbs_realtime.FirebaseDatabaseRealtimeClient
 import android.os.Build
 import android.util.Log
-import android.widget.Toast
-import androidx.annotation.RequiresApi
-import androidx.compose.ui.text.capitalize
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavController
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoField
@@ -116,12 +109,12 @@ class DashBoardViewModel(
                 HabitsData(
                     habitId = "7",
                     name = "Water",
-                    progress = 30,
+                    progress = 100,
                     icon = R.drawable.water_icon
 
                 ),
                 userId = firebaseAuthClient.getSignInUser()?.userId.toString(),
-                date = "2024 10 15"
+                date = formattedDate
             )
             {
 //                  Handle Result di sini
@@ -194,11 +187,11 @@ class DashBoardViewModel(
     }
 
 
+//    Function untuk set Activiy berdasarkan nilai dropDownValue = Weekly/Monthly
     fun setActivityProgress(
         allHabitsMap: AllHabitDataList = _allHabitList.value,
         dropDownValue: String = "Weekly"
     ) {
-        var progressMonthly = 0
 
         val formatter = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             DateTimeFormatter.ofPattern("yyyy MM dd")
@@ -239,10 +232,15 @@ class DashBoardViewModel(
                             .replaceFirstChar { it.titlecase(Locale.getDefault()) }
 
                         // Tambahkan ke progress yang sesuai
+                        var isToday = false
+                        if(date == formattedDate){
+                            isToday = true
+                        }
                         val updateActivityProgress = _activityProgress.value.data.orEmpty() +
                                 ActivityProgressData(
                                     day = dayOfWeek,
                                     progress = progress,
+                                    isTodayOrCurrentMonthly = isToday
                                 )
                         _activityProgress.value = ActivityProgressList(updateActivityProgress)
                     } else {
@@ -255,7 +253,7 @@ class DashBoardViewModel(
             "Monthly" -> {
                 // Membuat peta untuk menyimpan total progress per bulan
                 val monthlyProgressMap =
-                    mutableMapOf<String, Pair<Int, Int>>() // (totalProgress, totalHabits)
+                    mutableMapOf<String, Pair<Int, Int, >>() // (totalProgress, totalHabits)
 
                 allHabitsMap.date?.forEach { date, habits ->
                     val dateFormatted = LocalDate.parse(date, formatter)
@@ -282,17 +280,28 @@ class DashBoardViewModel(
                     )
                 }
 
+                fun getCurrentMonth(date :String) : String {
+                    val dateFormatted = LocalDate.parse(date, formatter)
+                    val month: String = dateFormatted.month.name.lowercase()
+                        .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
+                 return month
+                }
                 // Setelah semua data terkumpul, hitung dan update progress bulanan
                 monthlyProgressMap.forEach { (month, progressData) ->
                     val (totalProgress, totalHabits) = progressData
-                    progressMonthly = totalProgress / totalHabits
+                    val progressMonthly = totalProgress / totalHabits
 
                     Log.d("persentasi perbulan", "$totalProgress / $totalHabits = $progressMonthly")
 
+                    var isCurrentMonth = false
+                    if(month == getCurrentMonth(formattedDate)){
+                        isCurrentMonth = true
+                    }
                     val updateActivityProgress = _activityProgress.value.data.orEmpty() +
                             ActivityProgressData(
                                 day = month, // Menyimpan nama bulan
                                 progress = progressMonthly,
+                                isTodayOrCurrentMonthly = isCurrentMonth
                             )
                     _activityProgress.value = ActivityProgressList(updateActivityProgress)
                 }
