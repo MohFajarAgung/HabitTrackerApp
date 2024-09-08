@@ -110,7 +110,11 @@ fun ActivityProgress(
             ) {
                 activityProgress.data?.let {
 
-                    for (i in 0..it.size - 1) {
+                    var size = 6
+                    if(it.size < 7){
+                        size = it.size - 1
+                    }
+                    for (i in 0..size) {
                         Column(
                             modifier = Modifier
                                 .weight(1f)
@@ -170,6 +174,10 @@ fun CustomDrowDown(
     // Items for the dropdown menu
     val items = listOf("Weekly", "Monthly")
 
+    LaunchedEffect(selectedItem){
+        dashBoardViewModel.setActivityProgress(dropDownValue = selectedItem)
+    }
+
 
     // Button to trigger the dropdown
     ExposedDropdownMenuBox(
@@ -214,7 +222,6 @@ fun CustomDrowDown(
                 DropdownMenuItem(
                     text = { Text(item) },
                     onClick = {
-                        dashBoardViewModel.setActivityProgress(dropDownValue = item)
                         selectedItem = item
                         expanded = false
                     }

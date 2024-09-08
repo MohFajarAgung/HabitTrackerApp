@@ -58,13 +58,13 @@ fun LoginOrCreateOption(
             }
         })
     Column {
-        CustomLoginOptionButton(
-            textButton = LoginOrCreateOptionData().facebook,
-            iconPainter = painterResource(id = R.drawable.facebook_icon),
-            bgColor = Color(0xFF7583CA),
-        ) {
-            Toast.makeText(context, "Belum Tersedia", Toast.LENGTH_SHORT).show()
-        }
+//        CustomLoginOptionButton(
+//            textButton = LoginOrCreateOptionData().facebook,
+//            iconPainter = painterResource(id = R.drawable.facebook_icon),
+//            bgColor = Color(0xFF7583CA),
+//        ) {
+//            Toast.makeText(context, "Belum Tersedia", Toast.LENGTH_SHORT).show()
+//        }
         CustomLoginOptionButton(
             textButton = LoginOrCreateOptionData().google,
             iconPainter = painterResource(id = R.drawable.google_icon),

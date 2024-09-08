@@ -111,20 +111,20 @@ class DashBoardViewModel(
     private fun setTodayHabitsData() {
         viewModelScope.launch {
 
-            firebaseDatabaseRealtimeClient.setTodayHabit(
-                HabitsData(
-                    habitId = "4",
-                    name = "Cycling",
-                    progress = 100,
-                    icon = R.drawable.cycling_icon
-
-                ),
-                userId = firebaseAuthClient.getSignInUser()?.userId.toString(),
-                date = "2024 10 07"
-            )
-            {
-//                  Handle Result di sini
-            }
+//            firebaseDatabaseRealtimeClient.setTodayHabit(
+//                HabitsData(
+//                    habitId = "7",
+//                    name = "Water",
+//                    progress = 30,
+//                    icon = R.drawable.water_icon
+//
+//                ),
+//                userId = firebaseAuthClient.getSignInUser()?.userId.toString(),
+//                date = "2024 09 15"
+//            )
+//            {
+////                  Handle Result di sini
+//            }
 
 
 //            _habitList.value = HabitDataList(listOf(
